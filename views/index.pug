@@ -1,0 +1,11 @@
+extends layout
+
+block content
+    h1 portfolio
+    ul.list-group
+        each document, i in documents
+            li.list-group=document.title
+            li.list-group= document.document_type
+            li.list-group= document.author
+            li.list-group= document.description
+            br

@@ -1,0 +1,37 @@
+extends layout
+
+block content
+    h1 admin page
+    ul
+        li upload files
+        li delete files
+        li make files public
+        li edit data
+
+    h3 Add documents
+    form(method='POST', action='/admin/add')
+        #form-group
+            label Document type: 
+            select(name='document_type', required)
+                option.form-control(value='')
+                option.form-control(value='Lõputöö') Lõputöö
+                option.form-control(value='Seminaritöö') Seminaritöö
+                option.form-control(value='Praktika aruanne') Praktika aruanne
+                option.form-control(value='Muu') Muu
+        #form-group
+            label Document title: 
+            input.form-control(name='title', type='text', required)
+        #form-group
+            label Author: 
+            input.form-control(name='author', type='text', required)
+        #form-group
+            label Created at: 
+            input.form-control(name='created_at', type='date')
+        #form-group
+            label Description: 
+            textarea.form-control(name='description')
+        #form-group
+            label Tags: 
+            input.form-control(name='tag', type='text' disabled)
+            br
+        input.btn.btn-primary(type='submit', value='Submit')
