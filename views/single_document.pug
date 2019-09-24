@@ -1,0 +1,15 @@
+extends layout
+
+block content
+    h1 single document page
+    br
+    p Id: #{document._id}
+    p Document type: #{document.document_type}
+    p Document title: #{document.title}
+    p Document author: #{document.author}
+    p Document created at: #{document.created_at}
+    p Document description: #{document.description}
+    p pics or some other for download
+    hr
+    //- visible if logged in
+    a.btn.btn-default(href='/document/edit/'+ document._id) Edit

@@ -2,10 +2,27 @@ extends layout
 
 block content
     h1 portfolio
-    ul.list-group
+    //- ul.list-group
+    //-     each document, i in documents
+    //-         li.list-group=document.title
+    //-         li.list-group= document.document_type
+    //-         li.list-group= document.author
+    //-         li.list-group= document.description
+    br
+    .row
         each document, i in documents
-            li.list-group=document.title
-            li.list-group= document.document_type
-            li.list-group= document.author
-            li.list-group= document.description
-            br
+            .col-md-4 
+                .card.mb-4.shadow-sm
+                svg.bd-placeholder-img.card-img-top(width='100%' height='225' xmlns='http://www.w3.org/2000/svg' preserveaspectratio='xMidYMid slice' focusable='false' role='img' aria-label='Placeholder: Thumbnail')
+                    title Placeholder
+                    rect(width='100%' height='100%' fill='#55595c')
+                    text(x='50%' y='50%' fill='#eceeef' dy='.3em') Thumbnail
+                .card-body
+                    a(href='/document/' + document._id)=document.title
+                    //- p.card-text=document.title
+                    .d-flex.justify-content-between.align-items-center
+                    .btn-group
+                        button.btn.btn-sm.btn-outline-secondary(type='button') View
+                        //- edit visible if logged in
+                        button.btn.btn-sm.btn-outline-secondary(type='button') Edit
+                    

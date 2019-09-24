@@ -58,6 +58,7 @@ app.get('/document/:id', (req, res) => {
     });
 });
 
+
 //admin route
 app.get('/admin', (req, res) => {
     res.render('admin', {
@@ -84,6 +85,36 @@ app.post('/admin/add', (req, res) => {
     });
 });
 
+//load edit form
+app.get('/document/edit/:id', (req, res) => {
+    Document.findById(req.params.id, (err, document) => {
+        res.render('edit_document', {
+            document: document
+        });
+    });
+});
+
+//update submit POST route
+app.post('/document/edit/:id', (req, res) => {
+    let document = {};
+    document.document_type = req.body.document_type;
+    document.title = req.body.title;
+    document.author = req.body.author;
+    document.created_at = req.body.created_at;
+    document.description = req.body.description;
+    //document.tag = req.body.tag;
+
+    let query = {_id:req.params.id}
+
+    Document.update(query, document, (err) => {
+        if(err){
+            console.log(err);
+            return;
+        } else {
+            res.redirect('/admin');
+        }
+    });
+});
 //start server
 app.listen(3000, () => {
     console.log('Server listening on port 3000');
