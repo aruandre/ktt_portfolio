@@ -12,4 +12,5 @@ block content
     p pics or some other for download
     hr
     //- visible if logged in
-    a.btn.btn-default(href='/document/edit/'+ document._id) Edit
+    a.btn.btn-primary(href='/document/edit/'+ document._id) Edit
+    a.btn.btn-danger.delete-document(href='#', data-id=document._id) Delete

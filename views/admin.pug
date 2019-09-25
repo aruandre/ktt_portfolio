@@ -12,7 +12,7 @@ block content
     form(method='POST', action='/admin/add')
         #form-group
             label Document type: 
-            select(name='document_type', required)
+            select(name='document_type')
                 option.form-control(value='')
                 option.form-control(value='Lõputöö') Lõputöö
                 option.form-control(value='Seminaritöö') Seminaritöö
@@ -20,10 +20,10 @@ block content
                 option.form-control(value='Muu') Muu
         #form-group
             label Document title: 
-            input.form-control(name='title', type='text', required)
+            input.form-control(name='title', type='text')
         #form-group
             label Author: 
-            input.form-control(name='author', type='text', required)
+            input.form-control(name='author', type='text')
         #form-group
             label Created at: 
             input.form-control(name='created_at', type='date')
