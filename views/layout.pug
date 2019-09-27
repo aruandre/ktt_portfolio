@@ -12,7 +12,10 @@ body
             ul.navbar-nav.mr-auto
             nav.my-2.my-lg-0
                 a.navbar-brand(href='#') About    
-                a.navbar-brand(href='/') Contact             
+                a.navbar-brand(href='/') Contact
+                if user
+                    a.navbar-brand(href='/logout') Logout             
+             
     .container
         != messages('message', locals)
         //- TODO display validation errors
