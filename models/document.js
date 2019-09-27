@@ -4,15 +4,15 @@ let mongoose = require('mongoose');
 let documentSchema = mongoose.Schema({
     document_type:{
         type: String,
-        required: true
+        //required: true
     },
     title:{
         type: String,
-        required: true
+        //required: true
     },
     author:{
         type: String,
-        required: true
+        //required: true
     },
     created_at:{
         type: Date,
@@ -26,6 +26,10 @@ let documentSchema = mongoose.Schema({
         type: String,
         required: false
     }
+    // path:{
+    //     type: String,
+    //     required: false
+    // }
 });
 
 let Document = module.exports = mongoose.model('Document', documentSchema);

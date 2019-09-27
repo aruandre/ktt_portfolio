@@ -2,12 +2,15 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { check, validationResult } = require('express-validator');
+//const { check, validationResult } = require('express-validator');
 //const flash = require('connect-flash');
 const session = require('express-session');
+const passport = require('passport');
+const config = require('./config/database');
+const bcrypt = require('bcryptjs');
 
 //db connection
-mongoose.connect('mongodb://localhost/portfolio', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(config.database, { useNewUrlParser: true, useUnifiedTopology: true });
 let db = mongoose.connection;
 
 //check connection
@@ -25,6 +28,8 @@ const app = express();
 
 //bring in models
 let Document = require('./models/document');
+let User = require('./models/user');
+//let Upload = require('./models/upload');
 
 //load view engine
 app.set('views', path.join(__dirname, 'views'));
@@ -52,6 +57,11 @@ app.use((req, res, next) => {
     next();
 });
 
+//passport config
+require('./config/passport')(passport);
+//passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 //---- routes ----//
 //home route
@@ -77,7 +87,6 @@ app.get('/document/:id', (req, res) => {
     });
 });
 
-
 //admin route
 app.get('/admin', (req, res) => {
     res.render('admin', {
@@ -87,47 +96,47 @@ app.get('/admin', (req, res) => {
 
 //add submit POST route
 app.post('/admin/add', 
-    //TODO fix validation
-    // [
+//TODO fix validation
+// [
     // check('document_type').isEmpty().withMessage('Document type is required'),
     // check('title').isEmpty().withMessage('Document title is required'),
     // check('author').isEmpty().withMessage('Document author is required')
     // ], 
     (req, res) => {
+        
+        //get errors
+        // let errors = validationResult(req);
+        
+        // if(!errors.isEmpty()){
+            //     res.render('admin', {
+                //         errors:errors
+                //     });
+                // } else {
+                    let document = new Document();
+                    document.document_type = req.body.document_type;
+                    document.title = req.body.title;
+                    document.author = req.body.author;
+                    document.created_at = req.body.created_at;
+                    document.description = req.body.description;
+                    //document.tag = req.body.tag;
+                    document.save((err) => {
+                        if(err){
+                            console.log(err);
+                            return;
+                        } else {
+                            req.flash('success', 'Document added');
+                            res.redirect('/admin');
+                        }
+        });
+        // }
+    });
     
-    //get errors
-    // let errors = validationResult(req);
-
-    // if(!errors.isEmpty()){
-    //     res.render('admin', {
-    //         errors:errors
-    //     });
-    // } else {
-        let document = new Document();
-        document.document_type = req.body.document_type;
-        document.title = req.body.title;
-        document.author = req.body.author;
-        document.created_at = req.body.created_at;
-        document.description = req.body.description;
-        //document.tag = req.body.tag;
-        document.save((err) => {
-            if(err){
-                console.log(err);
-                return;
-            } else {
-                req.flash('success', 'Document added');
-                res.redirect('/admin');
-            }
-        });
-    // }
-});
-
-//load edit form
-app.get('/document/edit/:id', (req, res) => {
-    Document.findById(req.params.id, (err, document) => {
-        res.render('edit_document', {
-            document: document
-        });
+    //load edit form
+    app.get('/document/edit/:id', (req, res) => {
+        Document.findById(req.params.id, (err, document) => {
+            res.render('edit_document', {
+                document: document
+            });
     });
 });
 
@@ -140,9 +149,9 @@ app.post('/document/edit/:id', (req, res) => {
     document.created_at = req.body.created_at;
     document.description = req.body.description;
     //document.tag = req.body.tag;
-
+    
     let query = {_id:req.params.id}
-
+    
     Document.update(query, document, (err) => {
         if(err){
             console.log(err);
@@ -164,6 +173,53 @@ app.delete('/document/:id', (req, res) => {
         }
         res.send('Success');
     });
+});
+
+//register form
+app.get('/register', (req, res) => {
+    res.render('register');
+});
+
+//register process
+app.post('/register', (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    let newUser = new User({
+        username: username,
+        password: password
+    });
+        
+    bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(newUser.password, salt, (err, hash) => {
+            if(err){
+                console.log(err);
+            }
+            newUser.password = hash;
+            newUser.save((err) => {
+                if(err){
+                    console.log(err);
+                    return;
+                } else {
+                    res.redirect('/login');
+                }
+            });
+        });
+    });
+});
+
+//login route
+app.get('/login', (req, res) => {
+    res.render('login');
+});
+
+//login process
+app.post('/login', (req, res, next) => {
+    passport.authenticate('local', {
+        successRedirect:'/',
+        failureRedirect:'/login',
+        failureFlash: true
+    })(req, res, next);
 });
 
 //start server

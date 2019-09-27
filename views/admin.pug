@@ -12,7 +12,7 @@ block content
     form(method='POST', action='/admin/add')
         #form-group
             label Document type: 
-            select(name='document_type')
+            select(name='document_type', required)
                 option.form-control(value='')
                 option.form-control(value='Lõputöö') Lõputöö
                 option.form-control(value='Seminaritöö') Seminaritöö
@@ -20,10 +20,10 @@ block content
                 option.form-control(value='Muu') Muu
         #form-group
             label Document title: 
-            input.form-control(name='title', type='text')
+            input.form-control(name='title', type='text', required)
         #form-group
             label Author: 
-            input.form-control(name='author', type='text')
+            input.form-control(name='author', type='text', required)
         #form-group
             label Created at: 
             input.form-control(name='created_at', type='date')
@@ -34,4 +34,6 @@ block content
             label Tags: 
             input.form-control(name='tag', type='text' disabled)
             br
+        //-form(method='POST', action='/admin/add', enctype='multipart/form-data')
+        //-input(type='file', name='imageupload')
         input.btn.btn-primary(type='submit', value='Submit')
