@@ -11,6 +11,8 @@ body
         #navbarsExampleDefault.collapse.navbar-collapse
             ul.navbar-nav.mr-auto
             nav.my-2.my-lg-0
+                if user
+                    a.navbar-brand(href='/admin') Admin page
                 a.navbar-brand(href='#') About    
                 a.navbar-brand(href='/') Contact
                 if user

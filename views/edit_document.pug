@@ -2,7 +2,7 @@ extends layout
 
 block content
     br
-    form(method='POST', action='/admin/edit/:id')
+    form(method='POST', action='/admin/edit/' + document._id)
             #form-group
                 label Document type: 
                 select(name='document_type', required)

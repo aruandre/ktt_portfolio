@@ -68,6 +68,16 @@ app.get('*', (req, res, next) => {
     next();
 });
 
+//ACL
+function ensureAuthenticated(req, res, next){
+    if(req.isAuthenticated()){
+        return next();
+    } else {
+        req.flash('danger', 'Action not allowed!');
+        res.redirect('/');
+    }
+}
+
 //---- routes ----//
 //home route
 app.get('/', (req, res) => {
@@ -93,14 +103,14 @@ app.get('/document/:id', (req, res) => {
 });
 
 //admin route
-app.get('/admin', (req, res) => {
+app.get('/admin', ensureAuthenticated, (req, res) => {
     res.render('admin', {
         title: 'Admin page'
     });
 });
 
 //add submit POST route
-app.post('/admin/add', 
+app.post('/admin/add', ensureAuthenticated,
 //TODO fix validation
 // [
     // check('document_type').isEmpty().withMessage('Document type is required'),
@@ -137,7 +147,7 @@ app.post('/admin/add',
     });
     
     //load edit form
-    app.get('/document/edit/:id', (req, res) => {
+    app.get('/document/edit/:id', ensureAuthenticated, (req, res) => {
         Document.findById(req.params.id, (err, document) => {
             res.render('edit_document', {
                 document: document
@@ -146,7 +156,7 @@ app.post('/admin/add',
 });
 
 //update submit POST route
-app.post('/document/edit/:id', (req, res) => {
+app.post('/admin/edit/:id', ensureAuthenticated, (req, res) => {
     let document = {};
     document.document_type = req.body.document_type;
     document.title = req.body.title;
@@ -157,7 +167,7 @@ app.post('/document/edit/:id', (req, res) => {
     
     let query = {_id:req.params.id}
     
-    Document.update(query, document, (err) => {
+    Document.updateOne(query, document, (err) => {
         if(err){
             console.log(err);
             return;
@@ -169,7 +179,11 @@ app.post('/document/edit/:id', (req, res) => {
 });
 
 //delete route
-app.delete('/document/:id', (req, res) => {
+app.delete('/document/:id', ensureAuthenticated, (req, res) => {
+    if(!req.user._id){
+        res.status(500).save();
+    }
+    
     let query = {_id:req.params.id}
 
     Document.deleteOne(query, (err) => {
@@ -233,6 +247,7 @@ app.get('/logout', (req, res) => {
     req.flash('success', 'You are logged out');
     res.redirect('/');
 });
+
 
 //start server
 app.listen(3000, () => {
