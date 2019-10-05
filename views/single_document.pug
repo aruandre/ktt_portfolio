@@ -9,7 +9,9 @@ block content
     p Document author: #{document.author}
     p Document created at: #{document.created_at}
     p Document description: #{document.description}
-    p pics or some other for download
+    p Document tags: #{document.tag}
+    strong
+        p TODO: upload/download pics/docs
     hr
     //- visible if logged in
     if user

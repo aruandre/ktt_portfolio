@@ -24,7 +24,12 @@ block content
                 label Description: 
                 textarea.form-control(name='description', value=document.description)
             #form-group
-                label Tags: 
-                input.form-control(name='tag', type='text' disabled)
-                br
+            label Tags: 
+            .form-check
+            input#defaultCheck1.form-check-input(type='checkbox' value='Lõputöö')
+            label.form-check-label(for='defaultCheck1') Lõputöö
+            br
+            input#defaultCheck2.form-check-input(type='checkbox' value='Metall')
+            label.form-check-label(for='defaultCheck2') Metall
+            br
             input.btn.btn-primary(type='submit', value='Submit')

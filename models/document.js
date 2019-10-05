@@ -15,16 +15,13 @@ let documentSchema = mongoose.Schema({
         //required: true
     },
     created_at:{
-        type: Date,
-        required: false
+        type: Date
     },
     description:{
-        type: String,
-        required: false
+        type: String
     },
     tag:{
-        type: String,
-        required: false
+        type: Array
     }
     // path:{
     //     type: String,

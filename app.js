@@ -86,7 +86,7 @@ app.get('/', (req, res) => {
             console.log(err);
         } else {
             res.render('index', {
-                title: 'Portfolio',
+                //title: 'Portfolio',
                 documents: documents
             });
         }
@@ -105,7 +105,6 @@ app.get('/document/:id', (req, res) => {
 //admin route
 app.get('/admin', ensureAuthenticated, (req, res) => {
     res.render('admin', {
-        title: 'Admin page'
     });
 });
 
@@ -133,7 +132,7 @@ app.post('/admin/add', ensureAuthenticated,
                     document.author = req.body.author;
                     document.created_at = req.body.created_at;
                     document.description = req.body.description;
-                    //document.tag = req.body.tag;
+                    document.tag = req.body.tag;
                     document.save((err) => {
                         if(err){
                             console.log(err);
@@ -146,12 +145,12 @@ app.post('/admin/add', ensureAuthenticated,
         // }
     });
     
-    //load edit form
-    app.get('/document/edit/:id', ensureAuthenticated, (req, res) => {
-        Document.findById(req.params.id, (err, document) => {
-            res.render('edit_document', {
-                document: document
-            });
+//load edit form
+app.get('/document/edit/:id', ensureAuthenticated, (req, res) => {
+    Document.findById(req.params.id, (err, document) => {
+        res.render('edit_document', {
+            document: document
+        });
     });
 });
 
@@ -163,7 +162,7 @@ app.post('/admin/edit/:id', ensureAuthenticated, (req, res) => {
     document.author = req.body.author;
     document.created_at = req.body.created_at;
     document.description = req.body.description;
-    //document.tag = req.body.tag;
+    document.tag = req.body.tag;
     
     let query = {_id:req.params.id}
     
@@ -248,6 +247,21 @@ app.get('/logout', (req, res) => {
     res.redirect('/');
 });
 
+
+//get lõputööd route
+app.get('/loputood', (req, res) => {
+    Document.find({ document_type: 'Muu' }, (err, documents) => {
+        if(err){
+            console.log(err);
+        } else {
+            res.render('loputood', {
+                documents: documents
+            });
+        }
+    });
+});
+
+//TODO search get route
 
 //start server
 app.listen(3000, () => {
