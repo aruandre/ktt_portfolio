@@ -8,6 +8,8 @@ const session = require('express-session');
 const passport = require('passport');
 const config = require('./config/database');
 const bcrypt = require('bcryptjs');
+const multer = require('multer');
+
 
 //db connection
 mongoose.connect(config.database, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -26,10 +28,25 @@ db.on('error', (err) => {
 //init app
 const app = express();
 
+//public folder
+app.use(express.static('./public'));
+
+//set storage engine
+const storage = multer.diskStorage({
+    destination: './public/uploads/',
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
+//init upload
+const upload = multer({
+    storage: storage
+}).single('fileupload');
+
 //bring in models
 let Document = require('./models/document');
 let User = require('./models/user');
-//let Upload = require('./models/upload');
 
 //load view engine
 app.set('views', path.join(__dirname, 'views'));
@@ -86,7 +103,6 @@ app.get('/', (req, res) => {
             console.log(err);
         } else {
             res.render('index', {
-                //title: 'Portfolio',
                 documents: documents
             });
         }
@@ -109,42 +125,66 @@ app.get('/admin', ensureAuthenticated, (req, res) => {
 });
 
 //add submit POST route
-app.post('/admin/add', ensureAuthenticated,
-//TODO fix validation
-// [
-    // check('document_type').isEmpty().withMessage('Document type is required'),
-    // check('title').isEmpty().withMessage('Document title is required'),
-    // check('author').isEmpty().withMessage('Document author is required')
-    // ], 
-    (req, res) => {
+// app.post('/admin/add', ensureAuthenticated,
+// //TODO fix validation
+// // [
+//     // check('document_type').isEmpty().withMessage('Document type is required'),
+//     // check('title').isEmpty().withMessage('Document title is required'),
+//     // check('author').isEmpty().withMessage('Document author is required')
+//     // ], 
+//     (req, res) => {
         
-        //get errors
-        // let errors = validationResult(req);
+//         //get errors
+//         // let errors = validationResult(req);
         
-        // if(!errors.isEmpty()){
-            //     res.render('admin', {
-                //         errors:errors
-                //     });
-                // } else {
-                    let document = new Document();
-                    document.document_type = req.body.document_type;
-                    document.title = req.body.title;
-                    document.author = req.body.author;
-                    document.created_at = req.body.created_at;
-                    document.description = req.body.description;
-                    document.tag = req.body.tag;
-                    document.save((err) => {
-                        if(err){
-                            console.log(err);
-                            return;
-                        } else {
-                            req.flash('success', 'Document added');
-                            res.redirect('/admin');
-                        }
+//         // if(!errors.isEmpty()){
+//             //     res.render('admin', {
+//                 //         errors:errors
+//                 //     });
+//                 // } else {
+//                     let document = new Document();
+//                     document.document_type = req.body.document_type;
+//                     document.title = req.body.title;
+//                     document.author = req.body.author;
+//                     document.created_at = req.body.created_at;
+//                     document.description = req.body.description;
+//                     document.tag = req.body.tag;
+//                     document.path = req.body.path;
+//                     document.save((err) => {
+//                         if(err){
+//                             console.log(err);
+//                             return;
+//                         } else {
+//                             req.flash('success', 'Document added');
+//                             res.redirect('/admin');
+//                         }
+//         });
+//         // }
+//     });
+
+app.post('/admin/add', ensureAuthenticated, (req, res) => {
+    let document = new Document();
+    document.document_type = req.body.document_type;
+    document.title = req.body.title;
+    document.author = req.body.author;
+    document.created_at = req.body.created_at;
+    document.description = req.body.description;
+    document.tag = req.body.tag;
+    document.path = req.body.path;
+    document.save((err) => {
+        upload(req, res, (err) => {
+            if(err){
+                console.log(err);
+                return;
+            } else {
+                console.log(req);
+                req.flash('success', 'Document added');
+                res.redirect('/admin');
+            }
         });
-        // }
     });
-    
+})
+
 //load edit form
 app.get('/document/edit/:id', ensureAuthenticated, (req, res) => {
     Document.findById(req.params.id, (err, document) => {
@@ -262,6 +302,11 @@ app.get('/loputood', (req, res) => {
 });
 
 //TODO search get route
+
+//testing route
+app.get('/test', (req, res) => {
+    res.render('test');
+});
 
 //start server
 app.listen(3000, () => {

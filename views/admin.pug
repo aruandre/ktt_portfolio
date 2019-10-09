@@ -7,9 +7,8 @@ block content
         li delete files
         li make files public
         li edit data
-
     h3 Add documents
-    form(method='POST', action='/admin/add')
+    form(method='POST', action='/admin/add', enctype='multipart/form-data')
         #form-group
             label Document type: 
             select(name='document_type', required)
@@ -31,6 +30,7 @@ block content
             label Description:
             textarea.form-control(name='description')
         #form-group
+            //- TODO fix adding tags
             label Tags:
             br
             input#defaultCheck1.form-check-input(type='checkbox', value='Lõputöö')
@@ -39,8 +39,8 @@ block content
             input#defaultCheck2.form-check-input(type='checkbox', value='Metall')
             label.form-check-label(for='defaultCheck2') Metall
             br
-        //-form(method='POST', action='/admin/add', enctype='multipart/form-data')
-        //-input(type='file', name='imageupload')
-        input.btn.btn-primary(type='submit', value='Submit')
+        #form-group
+            input(type='file', name='fileupload')
+            input.btn.btn-primary(type='submit', value='Submit')
 
         //- TODO superadmins/admin ACL's

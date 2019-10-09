@@ -1,26 +1,40 @@
 extends layout
 
 block content
+    script(src='//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js')
+
     h1.jumbotron-heading Album example
         p.lead.text-muted| Something short and leading about the collection below&mdash;its contents, the creator, etc. Make it short and sweet, but not too short so folks don&rsquo;t simply skip over it entirely.
         a.btn.btn-primary.my-2(href='#') Main call to action
         a.btn.btn-secondary.my-2(href='#') Secondary action
     br
-    .row
-        each document, i in documents
-            .col-md-4 
-                .card.mb-4.shadow-sm
-                svg.bd-placeholder-img.card-img-top(width='100%' height='225' xmlns='http://www.w3.org/2000/svg' preserveaspectratio='xMidYMid slice' focusable='false' role='img' aria-label='Placeholder: Thumbnail')
-                    title Placeholder
-                    rect(width='100%' height='100%' fill='#55595c')
-                    //- TODO open view from thumbnail
-                    text(x='50%' y='50%' fill='#eceeef' dy='.3em') Thumbnail
-                .card-body
-                    p=document.title
-                    p=document.author
-                    //- p.card-text=document.title
-                    .d-flex.justify-content-between.align-items-center
-                    a.btn.btn-sm.btn-outline-secondary(href='/document/' + document._id) View
-                    //- edit visible if logged in
-                    //-button.btn.btn-sm.btn-outline-secondary(type='button') Edit
-                    
+    //- TODO fix sorting/searching
+    #documents
+        .row
+        .col-md-12
+            input.search.form-control(placeholder='Search')
+            button.sort.btn.btn-primary(data-sort='author')
+            | Sort by author
+            button.sort.btn.btn-primary(data-sort='title')
+            | Sort by title
+        .row
+            each document, i in documents
+                .col-md-4
+                    .list-group.list
+                        .list-group-item
+                            .card.mb-4.shadow-sm
+                                svg.bd-placeholder-img.card-img-top(width='100%' height='225' xmlns='http://www.w3.org/2000/svg' preserveaspectratio='xMidYMid slice' focusable='false' role='img' aria-label='Placeholder: Thumbnail')
+                                    title=document.title
+                                    rect(width='100%' height='100%' fill='#55595c')
+                                    //- TODO open view from thumbnail
+                                    text(x='50%' y='50%' fill='#eceeef' dy='.3em') Thumbnail
+                                    p.list-group-item-text.title=document.title
+                                    p.list-group-item-text.author=document.author
+                                    //- p.card-text=document.title
+                                    .d-flex.justify-content-between.align-items-center
+                                    a.btn.btn-sm.btn-outline-secondary(href='/document/' + document._id) View
+        script.
+            var options = {
+                valueNames: [ 'author', 'title' ]
+            };
+            var docList = new List('documents', options);

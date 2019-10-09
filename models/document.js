@@ -22,11 +22,11 @@ let documentSchema = mongoose.Schema({
     },
     tag:{
         type: Array
+    },
+    path:{
+        type: String,
+        required: false
     }
-    // path:{
-    //     type: String,
-    //     required: false
-    // }
 });
 
 let Document = module.exports = mongoose.model('Document', documentSchema);
