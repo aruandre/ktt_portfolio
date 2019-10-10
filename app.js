@@ -42,7 +42,14 @@ const storage = multer.diskStorage({
 //init upload
 const upload = multer({
     storage: storage,
-    limits: {fileSize: 10000000}
+    limits: {fileSize: 10000000}, //10MB
+    fileFilter: (req, file, cb) => {
+        let ext = path.extname(file.originalname);
+        if(ext !== '.png' || ext !== '.jpg' || ext !== '.jpeg' || ext !== '.pdf'){
+            req.flash('danger', 'File type not allowed!');
+        }
+        cb(null, true)
+    }
 }).single('fileupload');
 
 //bring in models

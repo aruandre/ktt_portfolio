@@ -2,7 +2,7 @@ extends layout
 
 block content
     br
-    form(method='POST', action='/admin/edit/' + document._id)
+    form(method='POST', action='/admin/edit/' + document._id, enctype='multipart/form-data')
             #form-group
                 label Document type: 
                 select(name='document_type', required)
@@ -32,4 +32,6 @@ block content
             input#defaultCheck2.form-check-input(type='checkbox' value='Metall')
             label.form-check-label(for='defaultCheck2') Metall
             br
+            #form-group
+            input(type='file', name='fileupload')
             input.btn.btn-primary(type='submit', value='Submit')
