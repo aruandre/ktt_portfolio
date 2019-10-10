@@ -41,7 +41,8 @@ const storage = multer.diskStorage({
 
 //init upload
 const upload = multer({
-    storage: storage
+    storage: storage,
+    limits: {fileSize: 10000000}
 }).single('fileupload');
 
 //bring in models
@@ -124,7 +125,6 @@ app.get('/admin', ensureAuthenticated, (req, res) => {
     });
 });
 
-//add submit POST route
 // app.post('/admin/add', ensureAuthenticated,
 // //TODO fix validation
 // // [
@@ -132,11 +132,9 @@ app.get('/admin', ensureAuthenticated, (req, res) => {
 //     // check('title').isEmpty().withMessage('Document title is required'),
 //     // check('author').isEmpty().withMessage('Document author is required')
 //     // ], 
-//     (req, res) => {
-        
+//     (req, res) => { 
 //         //get errors
 //         // let errors = validationResult(req);
-        
 //         // if(!errors.isEmpty()){
 //             //     res.render('admin', {
 //                 //         errors:errors
@@ -144,12 +142,6 @@ app.get('/admin', ensureAuthenticated, (req, res) => {
 //                 // } else {
 //                     let document = new Document();
 //                     document.document_type = req.body.document_type;
-//                     document.title = req.body.title;
-//                     document.author = req.body.author;
-//                     document.created_at = req.body.created_at;
-//                     document.description = req.body.description;
-//                     document.tag = req.body.tag;
-//                     document.path = req.body.path;
 //                     document.save((err) => {
 //                         if(err){
 //                             console.log(err);
@@ -163,27 +155,33 @@ app.get('/admin', ensureAuthenticated, (req, res) => {
 //     });
 
 app.post('/admin/add', ensureAuthenticated, (req, res) => {
-    let document = new Document();
-    document.document_type = req.body.document_type;
-    document.title = req.body.title;
-    document.author = req.body.author;
-    document.created_at = req.body.created_at;
-    document.description = req.body.description;
-    document.tag = req.body.tag;
-    document.path = req.body.path;
-    document.save((err) => {
-        upload(req, res, (err) => {
-            if(err){
-                console.log(err);
-                return;
-            } else {
+    upload(req, res, (err) => {
+        if(err){
+            console.log(err);
+            req.flash('danger', 'File upload failed!');
+            return;
+        } else {
+            new Document({
+                document_type: req.body.document_type,
+                title: req.body.title,
+                author: req.body.author,
+                created_at: req.body.created_at,
+                description: req.body.description,
+                tag: req.body.tag,
+                path: req.body.path
+            }).save((err, doc) => {
                 console.log(req);
-                req.flash('success', 'Document added');
-                res.redirect('/admin');
-            }
-        });
+                if(err){
+                    req.flash('danger', 'Data save failed!');
+                    return;
+                } else {
+                    req.flash('success', 'Document added');
+                    res.redirect('/admin');
+                }
+            });
+        }
     });
-})
+});
 
 //load edit form
 app.get('/document/edit/:id', ensureAuthenticated, (req, res) => {
