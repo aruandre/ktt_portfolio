@@ -10,7 +10,7 @@ block content
     h3 Add documents
     form(method='POST', action='/admin/add', enctype='multipart/form-data')
         #form-group
-            label Document type: 
+            label Document type:
             select(name='document_type', required)
                 option.form-control(value='')
                 option.form-control(value='Lõputöö') Lõputöö
@@ -33,11 +33,12 @@ block content
             //- TODO fix adding tags
             label Tags:
             br
-            input#defaultCheck1.form-check-input(type='checkbox', value='Lõputöö')
-            label.form-check-label(for='defaultCheck1') Lõputöö
-            br
-            input#defaultCheck2.form-check-input(type='checkbox', value='Metall')
-            label.form-check-label(for='defaultCheck2') Metall
+            select(name='tag' multiple)
+                option.form-control(value='')
+                option.form-control(value='Metall') Metall
+                option.form-control(value='Puit') Puit
+                option.form-control(value='Tekstiil') Tekstiil
+                option.form-control(value='Muu') Muu
             br
         #form-group
             input(type='file', name='fileupload')
