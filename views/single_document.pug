@@ -6,7 +6,7 @@ block content
     p Id: #{document._id}
     p Document type: #{document.document_type}
     p Document title: #{document.title}
-    p Document author: #{document.author}
+    p Document author: #{document.author} 
     p Document created at: #{document.created_at}
     p Document description: #{document.description}
     p Document tags: #{document.tag}
@@ -17,3 +17,4 @@ block content
     if user
         a.btn.btn-primary(href='/document/edit/'+ document._id) Edit
         a.btn.btn-danger.delete-document(href='#', data-id=document._id) Delete
+    a(href='/' + document.author) More from this author...

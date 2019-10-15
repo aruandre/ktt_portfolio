@@ -59,6 +59,8 @@ let User = require('./models/user');
 //load view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+// app.set('views', path.join(__dirname, 'views/ejs'));
+// app.set('view engine', 'ejs');
 
 //body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -295,7 +297,7 @@ app.get('/logout', (req, res) => {
 
 //get lõputööd route
 app.get('/loputood', (req, res) => {
-    Document.find({ document_type: 'Muu' }, (err, documents) => {
+    Document.find({ document_type: 'Lõputöö' }, (err, documents) => {
         if(err){
             console.log(err);
         } else {
@@ -308,12 +310,20 @@ app.get('/loputood', (req, res) => {
 
 //TODO search get route
 
-//testing route
-app.get('/test', (req, res) => {
-    res.render('test');
+//get author route
+app.get('/:author', (req, res) => {
+    Document.find({ document_author: req.body.author }, (err, documents) => {
+        if(err){
+            console.log(err);
+        } else {
+            res.render('single_author', {
+                documents: documents
+            });
+        }
+    });
 });
 
 //start server
-app.listen(3000, () => {
-    console.log('Server listening on port 3000');
+app.listen(30000, () => {
+    console.log('Server listening on port 30000');
 });
