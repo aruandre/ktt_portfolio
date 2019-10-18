@@ -1,0 +1,18 @@
+extends layout
+
+block content
+
+    h1 News page
+    br
+    .row
+    each singleNew, i in news
+        .card.card-body
+            .col-md-4
+                p.title=singleNew.title
+                p.date=singleNew.date
+                p.description=singleNew.description
+            if user
+                a.btn.btn-primary(href='/news/'+ news._id) Edit
+                a.btn.btn-danger.delete-document(href='#', data-id=news._id) Delete
+        br
+

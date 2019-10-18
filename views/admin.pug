@@ -1,47 +1,68 @@
 extends layout
 
 block content
-    h1 admin page
-    ul
-        li upload files
-        li delete files
-        li make files public
-        li edit data
-    h3 Add documents
-    form(method='POST', action='/admin/add', enctype='multipart/form-data')
-        #form-group
-            label Document type:
-            select(name='document_type', required)
-                option.form-control(value='')
-                option.form-control(value='Lõputöö') Lõputöö
-                option.form-control(value='Seminaritöö') Seminaritöö
-                option.form-control(value='Praktika aruanne') Praktika aruanne
-                option.form-control(value='Muu') Muu
-        #form-group
-            label Document title:
-            input.form-control(name='title', type='text', required)
-        #form-group
-            label Author:
-            input.form-control(name='author', type='text', required)
-        #form-group
-            label Created at:
-            input.form-control(name='created_at', type='date')
-        #form-group
-            label Description:
-            textarea.form-control(name='description')
-        #form-group
-            //- TODO fix adding tags
-            label Tags:
-            br
-            select(name='tag' multiple)
-                option.form-control(value='')
-                option.form-control(value='Metall') Metall
-                option.form-control(value='Puit') Puit
-                option.form-control(value='Tekstiil') Tekstiil
-                option.form-control(value='Muu') Muu
-            br
-        #form-group
-            input(type='file', name='fileupload')
-            input.btn.btn-primary(type='submit', value='Submit')
-
+    h1 Admin page
+    br
+    
+    //- toggle adding documents
+    button.btn.btn-primary(type='button' data-toggle='collapse' data-target='#collapse1' aria-expanded='false' aria-controls='collapse1')
+        | Add documents
+    p
+    #collapse1.collapse
+        form(method='POST', action='/admin/addDocument', enctype='multipart/form-data')
+            #form-group
+                label Document type:
+                select(name='document_type', required)
+                    option.form-control(value='')
+                    option.form-control(value='Lõputöö') Lõputöö
+                    option.form-control(value='Seminaritöö') Seminaritöö
+                    option.form-control(value='Praktika aruanne') Praktika aruanne
+                    option.form-control(value='Muu') Muu
+            #form-group
+                label Document title:
+                input.form-control(name='title', type='text', required)
+            #form-group
+                label Author:
+                input.form-control(name='author', type='text', required)
+            #form-group
+                label Created at:
+                input.form-control(name='created_at', type='date')
+            #form-group
+                label Description:
+                textarea.form-control(name='description')
+            #form-group
+                //- TODO fix adding tags
+                label Tags:
+                br
+                select(name='tag' multiple)
+                    option.form-control(value='')
+                    option.form-control(value='Metall') Metall
+                    option.form-control(value='Puit') Puit
+                    option.form-control(value='Tekstiil') Tekstiil
+                    option.form-control(value='Muu') Muu
+                br
+            #form-group
+                input(type='file', name='fileupload')
+                input.btn.btn-primary(type='submit', value='Submit')
+    
+    //- toggle adding news
+    button.btn.btn-primary(type='button' data-toggle='collapse' data-target='#collapse2' aria-expanded='false' aria-controls='collapse2')
+        | Add news
+    p
+    #collapse2.collapse
+        form(method='POST', action='/admin/addNews')
+            #form-group
+                label News title:
+                input.form-control(name='title', type='text', required)
+            #form-group
+                label Date:
+                input.form-control(name='date', type='date')
+            #form-group
+                label Description:
+                textarea.form-control(name='description')
+                br
+            #form-group
+                input.btn.btn-primary(type='submit', value='Submit')
+        
+        
         //- TODO superadmins/admin ACL's

@@ -55,6 +55,7 @@ const upload = multer({
 //bring in models
 let Document = require('./models/document');
 let User = require('./models/user');
+let News = require('./models/news');
 
 //load view engine
 app.set('views', path.join(__dirname, 'views'));
@@ -160,8 +161,8 @@ app.get('/admin', ensureAuthenticated, (req, res) => {
 //         });
 //         // }
 //     });
-
-app.post('/admin/add', ensureAuthenticated, (req, res) => {
+//add documents route
+app.post('/admin/addDocument', ensureAuthenticated, (req, res) => {
     upload(req, res, (err) => {
         if(err){
             console.log(err);
@@ -306,14 +307,38 @@ app.get('/loputood', (req, res) => {
     });
 });
 
-//TODO search get route
+//news route
+app.get('/news', (req, res) => {
+    News.find({}, (err, news) => {
+        if(err){
+            console.log(err);
+        } else {
+            res.render('news', {
+                news: news
+            });
+        }
+    });
+});
 
-//testing route
-app.get('/test', (req, res) => {
-    res.render('test');
+//add news route
+app.post('/admin/addNews', ensureAuthenticated, (req, res) => {
+    new News({
+        title: req.body.title,
+        date: req.body.date,
+        description: req.body.description,
+    }).save((err, news) => {
+        console.log(req);
+        if(err){
+            req.flash('danger', 'Data save failed!');
+            return;
+        } else {
+            req.flash('success', 'News added');
+            res.redirect('/admin');
+        }
+    });
 });
 
 //start server
-app.listen(3000, () => {
-    console.log('Server listening on port 3000');
+app.listen(30000, () => {
+    console.log('Server listening on port 30000');
 });
