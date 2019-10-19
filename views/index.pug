@@ -1,67 +1,8 @@
 extends layout
 
 block content
-    //- script(src='//cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js')
-    //- script(src='https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js')
-    
-    //- h1.jumbotron-heading Album example
-    //-     p.lead.text-muted| Something short and leading about the collection below&mdash;its contents, the creator, etc. Make it short and sweet, but not too short so folks don&rsquo;t simply skip over it entirely.
-    //-     a.btn.btn-primary.my-2(href='#') Main call to action
-    //-     a.btn.btn-secondary.my-2(href='#') Secondary action
-    //- br
-    //- //- TODO fix sorting/searching
-    //- #documents
-    //-     .row
-    //-     .col-md-12
-    //-         input.search.form-control(placeholder='Search')
-    //-         button.sort.btn.btn-primary(data-sort='author')
-    //-         | Sort by author
-    //-         button.sort.btn.btn-primary(data-sort='title')
-    //-         | Sort by title
-    //-     .row
-    //-         each document, i in documents
-    //-             .col-md-4
-    //-                 .list-group.list
-    //-                     .list-group-item
-    //-                         .card.mb-4.shadow-sm
-    //-                             svg.bd-placeholder-img.card-img-top(width='100%' height='225' xmlns='http://www.w3.org/2000/svg' preserveaspectratio='xMidYMid slice' focusable='false' role='img' aria-label='Placeholder: Thumbnail')
-    //-                                 title=document.title
-    //-                                 rect(width='100%' height='100%' fill='#55595c')
-    //-                                 //- TODO open view from thumbnail
-    //-                                 text(x='50%' y='50%' fill='#eceeef' dy='.3em') Thumbnail
-    //-                                 p.list-group-item-text.title=document.title
-    //-                                 p.list-group-item-text.author=document.author
-    //-                                 //- p.card-text=document.title
-    //-                                 .d-flex.justify-content-between.align-items-center
-    //-                                 a.btn.btn-sm.btn-outline-secondary(href='/document/' + document._id) View
-    //-     script.
-    //-         var options = {
-    //-             valueNames: [ 'author', 'title' ]
-    //-         };
-    //-         var docList = new List('documents', options);
-    link(href='/docs/4.3/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous')
-    link(rel='canonical' href='https://getbootstrap.com/docs/4.3/examples/cover/')
-
-
-    style.
-        .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        }
-        @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-        font-size: 3.5rem;
-        }
-        }
-
-    main.inner.cover(role='main')
-        h1.cover-heading Cover your page.
-        p.lead
-            | Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.
-        p.lead
-            a.btn.btn-lg.btn-secondary(href='#') Learn more
-
+    h1.jumbotron-heading Album example
+        p.lead.text-muted| Something short and leading about the collection below&mdash;its contents, the creator, etc. Make it short and sweet, but not too short so folks don&rsquo;t simply skip over it entirely.
+        a.btn.btn-primary.my-2(href='#') Main call to action
+        a.btn.btn-secondary.my-2(href='#') Secondary action
+    br

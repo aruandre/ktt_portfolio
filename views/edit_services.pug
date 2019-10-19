@@ -1,0 +1,15 @@
+extends layout
+
+block content
+    br
+    form(method='POST', action='/services/edit/' + service._id)
+        #form-group
+            label Service title:
+            input.form-control(name='title', type='text', value=service.title, required)
+        #form-group
+            label Description:
+            textarea.form-control(name='description', type='text', value=service.description)
+            br
+        #form-group
+            input.btn.btn-primary(type='submit', value='Submit')   
+    a.btn.btn-danger.delete-services(href='', data-id=service._id) Delete

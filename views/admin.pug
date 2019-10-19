@@ -64,5 +64,20 @@ block content
             #form-group
                 input.btn.btn-primary(type='submit', value='Submit')
         
+        //- toggle adding news
+    button.btn.btn-primary(type='button' data-toggle='collapse' data-target='#collapse3' aria-expanded='false' aria-controls='collapse3')
+        | Add services
+    p
+    #collapse3.collapse
+        form(method='POST', action='/admin/addService')
+            #form-group
+                label Service title:
+                input.form-control(name='title', type='text', required)
+            #form-group
+                label Description:
+                textarea.form-control(name='description')
+                br
+            #form-group
+                input.btn.btn-primary(type='submit', value='Submit')
         
         //- TODO superadmins/admin ACL's

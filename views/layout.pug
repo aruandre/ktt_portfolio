@@ -12,10 +12,11 @@ body
             ul.navbar-nav.mr-auto
             nav.my-2.my-lg-0
                 a.navbar-brand(href='/news') News
-                a.navbar-brand(href='/loputood') Lõputööd
+                a.navbar-brand(href='/services') Services
+                a.navbar-brand(href='/portfolio') Portfolio
                 if user
                     a.navbar-brand(href='/admin') Admin page
-                a.navbar-brand(href='#') About
+                a.navbar-brand(href='/about') About
                 a.navbar-brand(href='/') Contact
                 if user
                     a.navbar-brand(href='/logout') Logout
@@ -23,9 +24,9 @@ body
                     //- if user.username='admin'
                     //-     a.navbar-brand(href='/register') Register
             //- TODO search      
-            form.form-inline.my-2.my-lg-0(action='/search', method='GET')
-                input.form-control.mr-sm-2(type='search' placeholder='Search' aria-label='Search')
-                button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
+            //- form.form-inline.my-2.my-lg-0(action='/search', method='GET')
+            //-     input.form-control.mr-sm-2(type='search' placeholder='Search' aria-label='Search')
+            //-     button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
     .container
         != messages('message', locals)
         //- TODO display validation errors
