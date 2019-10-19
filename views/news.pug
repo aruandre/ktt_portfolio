@@ -1,7 +1,6 @@
 extends layout
 
 block content
-
     h1 News page
     br
     .row
@@ -13,6 +12,5 @@ block content
                 p.description=singleNew.description
         if user
             a.btn.btn-primary(href='/news/edit/'+ singleNew._id) Edit
-            //- a.btn.btn-danger.delete-news(href='#', data-id=singleNew._id) Delete
+            a.btn.btn-danger.delete-news(href='#', data-id=singleNew._id) Delete
         br
-

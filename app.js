@@ -381,7 +381,7 @@ app.get('/news/edit/:id', ensureAuthenticated, (req, res) => {
 });
 
 //delete news route
-app.delete('/news/:id', ensureAuthenticated, (req, res) => {
+app.delete('/news/edit/:id', ensureAuthenticated, (req, res) => {
     if(!req.user._id){
         res.status(500).save();
     }
