@@ -2,36 +2,41 @@ extends layout
 
 block content
     br
-    form(method='POST', action='/portfolio/document/edit/' + document._id, enctype='multipart/form-data')
-            #form-group
-                label Document type: 
-                select(name='document_type', required)
-                    option.form-control(value='')
-                    option.form-control(value='Lõputöö') Lõputöö
-                    option.form-control(value='Seminaritöö') Seminaritöö
-                    option.form-control(value='Praktika aruanne') Praktika aruanne
-                    option.form-control(value='Muu') Muu
-            #form-group
-                label Document title: 
-                input.form-control(name='title', type='text', value=document.title, required)
-            #form-group
-                label Author: 
-                input.form-control(name='author', type='text', value=document.author, required)
-            #form-group
-                label Created at: 
-                input.form-control(name='created_at', value=document.created_at, type='date')
-            #form-group
-                label Description: 
-                textarea.form-control(name='description', value=document.description)
-            #form-group
-            label Tags: 
-            .form-check
-            input#defaultCheck1.form-check-input(type='checkbox' value='Lõputöö')
-            label.form-check-label(for='defaultCheck1') Lõputöö
+    form(method='POST', action='/portfolio/document/edit/' + document._id)
+        //- enctype='multipart/form-data' adding this will break updating docs
+        #form-group
+            label Document type: 
+            select(name='document_type', required)
+                option.form-control(value='')
+                option.form-control(value='Lõputöö') Lõputöö
+                option.form-control(value='Seminaritöö') Seminaritöö
+                option.form-control(value='Praktika aruanne') Praktika aruanne
+                option.form-control(value='Muu') Muu
+        #form-group
+            label Document title: 
+            input.form-control(name='title', type='text', value=document.title, required)
+        #form-group
+            label Author: 
+            input.form-control(name='author', type='text', value=document.author, required)
+        #form-group
+            label Created at: 
+            input.form-control(name='created_at', value=document.created_at, type='date')
+        #form-group
+            label Description: 
+            textarea.form-control(name='description', value=document.description)
+        #form-group
+            label Tags:
             br
-            input#defaultCheck2.form-check-input(type='checkbox' value='Metall')
-            label.form-check-label(for='defaultCheck2') Metall
+            select(name='tag' data-role='tagsinput' id='tags' multiple)
+                option.form-control(value='')
+                option.form-control(value='Metall') Metall
+                option.form-control(value='Puit') Puit
+                option.form-control(value='Tekstiil') Tekstiil
+                option.form-control(value='Muu') Muu
             br
-            #form-group
+        #form-group.form-check
+            label.form-check-label Active
+            input.form-control-input(name='status' type='checkbox' value='true')
+        #form-group
             input(type='file', name='fileupload')
             input.btn.btn-primary(type='submit', value='Submit')

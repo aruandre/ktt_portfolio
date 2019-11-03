@@ -31,10 +31,9 @@ block content
                 label Description:
                 textarea.form-control(name='description')
             #form-group
-                //- TODO fix adding tags
                 label Tags:
                 br
-                select(name='tag' multiple)
+                select(name='tag' data-role='tagsinput' id='tags' multiple)
                     option.form-control(value='')
                     option.form-control(value='Metall') Metall
                     option.form-control(value='Puit') Puit
@@ -44,7 +43,9 @@ block content
             #form-group
                 input(type='file', name='fileupload')
                 input.btn.btn-primary(type='submit', value='Submit')
-    
+            #form-group.form-check
+                label.form-check-label(for='defaultCheck3') Active
+                input#defaultCheck3.form-control-input(name='status' type='checkbox' value='true')
     //- toggle adding news
     button.btn.btn-primary(type='button' data-toggle='collapse' data-target='#collapse2' aria-expanded='false' aria-controls='collapse2')
         | Add news

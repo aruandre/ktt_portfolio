@@ -220,7 +220,8 @@ app.post('/admin/addDocument', ensureAuthenticated, (req, res) => {
                 created_at: req.body.created_at,
                 description: req.body.description,
                 tag: req.body.tag,
-                path: req.body.path
+                path: req.body.path,
+                status: req.body.status
             }).save((err, doc) => {
                 console.log(req);
                 if(err){
@@ -240,7 +241,7 @@ app.post('/admin/addNews', ensureAuthenticated, (req, res) => {
     new News({
         title: req.body.title,
         date: req.body.date,
-        description: req.body.description,
+        description: req.body.description
     }).save((err, news) => {
         console.log(req);
         if(err){
@@ -258,7 +259,7 @@ app.post('/admin/addService', ensureAuthenticated, (req, res) => {
     new Services({
         title: req.body.title,
         date: req.body.date,
-        description: req.body.description,
+        description: req.body.description
     }).save((err, news) => {
         console.log(req);
         if(err){
@@ -274,7 +275,7 @@ app.post('/admin/addService', ensureAuthenticated, (req, res) => {
 //---------- PORTFOLIO ----------------
 //portfolio home route
 app.get('/portfolio', (req, res) => {
-    Document.find({}, (err, documents) => {
+    Document.find({ status: true }, (err, documents) => {
         if(err){
             console.log(err);
         } else {
@@ -312,9 +313,9 @@ app.post('/portfolio/document/edit/:id', ensureAuthenticated, (req, res) => {
     document.created_at = req.body.created_at;
     document.description = req.body.description;
     document.tag = req.body.tag;
+    document.status = req.body.status;
     
     let query = {_id:req.params.id}
-    
     Document.updateOne(query, document, (err) => {
         if(err){
             console.log(err);
@@ -340,21 +341,6 @@ app.delete('/portfolio/document/:id', ensureAuthenticated, (req, res) => {
         res.send('Success');
     });
 });
-
-
-//----------- TEST -----------
-//get lõputööd route
-// app.get('/loputood', (req, res) => {
-//     Document.find({ document_type: 'Muu' }, (err, documents) => {
-//         if(err){
-//             console.log(err);
-//         } else {
-//             res.render('loputood', {
-//                 documents: documents
-//             });
-//         }
-//     });
-// });
 
 
 //----------- NEWS -----------
@@ -403,7 +389,7 @@ app.post('/news/edit/:id', ensureAuthenticated, (req, res) => {
     news.description = req.body.description;
     
     let query = {_id:req.params.id}
-    
+
     News.updateOne(query, news, (err) => {
         if(err){
             console.log(err);
@@ -476,6 +462,7 @@ app.delete('/services/edit/:id', ensureAuthenticated, (req, res) => {
 app.get('/about', (req, res) => {
     res.render('about');
 });
+
 
 //------------- SERVER -------------
 //start server

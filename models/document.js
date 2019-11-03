@@ -23,6 +23,11 @@ let documentSchema = mongoose.Schema({
     tag:{
         type: Array
     },
+    status:{
+        type: Boolean,
+        default: false,
+        //required: true
+    },
     path:{
         type: String,
         required: false
