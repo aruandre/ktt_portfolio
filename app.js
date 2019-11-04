@@ -272,6 +272,15 @@ app.post('/admin/addService', ensureAuthenticated, (req, res) => {
     });
 });
 
+//admin get unpublished documents
+app.get('/admin/unpublished', ensureAuthenticated, (req, res) => {
+    Document.find({ status: false }, (err, documents) => {
+            res.render('unpublished', {
+                documents: documents
+            });
+    });
+});
+
 //---------- PORTFOLIO ----------------
 //portfolio home route
 app.get('/portfolio', (req, res) => {
@@ -462,7 +471,6 @@ app.delete('/services/edit/:id', ensureAuthenticated, (req, res) => {
 app.get('/about', (req, res) => {
     res.render('about');
 });
-
 
 //------------- SERVER -------------
 //start server

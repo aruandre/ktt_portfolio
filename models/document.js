@@ -31,6 +31,10 @@ let documentSchema = mongoose.Schema({
     path:{
         type: String,
         required: false
+    },
+    timestamp:{
+        type: Date,
+        default: Date.now
     }
 });
 

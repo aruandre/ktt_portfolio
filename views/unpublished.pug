@@ -1,0 +1,20 @@
+extends layout
+
+block content
+    h1 Unpublished docs
+    br
+    .row
+    each document, i in documents
+        .card.card-body
+            .col-md-4
+                p Document type: #{document.document_type}
+                p Document title: #{document.title}
+                p Document author: #{document.author}
+                p Document created at: #{document.created_at}
+                p Document description: #{document.description}
+                p Document tags: #{document.tag}
+                p Document status: #{document.status}
+        if user
+            a.btn.btn-primary(href='/portfolio/document/edit/'+ document._id) Edit
+            a.btn.btn-danger.delete-document(href='#', data-id=document._id) Delete
+        br

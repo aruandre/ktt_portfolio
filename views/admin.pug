@@ -33,7 +33,7 @@ block content
             #form-group
                 label Tags:
                 br
-                select(name='tag' data-role='tagsinput' id='tags' multiple)
+                select(name='tag' multiple)
                     option.form-control(value='')
                     option.form-control(value='Metall') Metall
                     option.form-control(value='Puit') Puit
@@ -81,4 +81,11 @@ block content
             #form-group
                 input.btn.btn-primary(type='submit', value='Submit')
         
+        //- view unpublished docs 
+        //- if user.username = 'admin'
+    a.button.btn.btn-primary(href='/admin/unpublished') Unpublished docs
+    //- .row
+    //-     each document, i in documents
+    //-         title=document.title
+
         //- TODO superadmins/admin ACL's
