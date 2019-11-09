@@ -11,8 +11,7 @@ block content
     p Document description: #{document.description}
     p Document tags: #{document.tag}
     strong
-        p TODO: upload/download pics/docs
-    hr
+        p TODO: display/upload/download pics/docs
     //- visible if logged in
     if user
         a.btn.btn-primary(href='/portfolio/document/edit/'+ document._id) Edit
