@@ -10,10 +10,11 @@ let documentSchema = mongoose.Schema({
         type: String,
         //required: true
     },
-    author:{
+    author:[{
         type: String,
+        trim: true
         //required: true
-    },
+    }],
     created_at:{
         type: Date
     },

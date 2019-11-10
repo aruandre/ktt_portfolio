@@ -3,22 +3,28 @@ html
     head
     title KTD | Portfolio
     link(rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.css')
-    link(rel='stylesheet' href='/test.css')
 body
     nav.navbar.navbar-expand-md(style='background-color: #e3f2fd;')
         a.navbar-brand-home(href='/') KTD Portfolio
-        #navbarsExampleDefault.collapse.navbar-collapse
-            ul.navbar-nav.mr-auto
-            nav.my-2.my-lg-0
-                a.navbar-brand(href='/news') News
-                a.navbar-brand(href='/services') Services
-                a.navbar-brand(href='/portfolio') Portfolio
-                if user
-                    a.navbar-brand(href='/admin') Admin page
-                a.navbar-brand(href='/about') About
-                a.navbar-brand(href='/') Contact
-                if user
-                    a.navbar-brand(href='/logout') Logout
+        ul.navbar-nav.mr-auto
+        nav.my-2.my-lg-0
+            a.navbar-brand(href='/news') News
+            a.navbar-brand(href='/services') Services
+            .dropdown
+                a.dropbtn.dropdown-toggle(href='/portfolio' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+                    | Portfolio
+                .dropdown-menu(aria-labelledby='dropbtn')
+                    a.dropdown-item(href='/portfolio') Portfolio
+                    a.dropdown-item(href='#') Students
+                    a.dropdown-item(href='#') Design studio
+                    a.dropdown-item(href='#') Internship
+            if user
+                a.navbar-brand(href='/admin') Admin page
+            a.navbar-brand(href='/about') About
+            a.navbar-brand(href='/') Contact
+            if user
+                a.navbar-brand(href='/logout') Logout
+
                     //- TODO fix registration for superadmin only
                     //- if user.username='admin'
                     //-     a.navbar-brand(href='/register') Register

@@ -216,7 +216,7 @@ app.post('/admin/addDocument', ensureAuthenticated, (req, res) => {
             new Document({
                 document_type: req.body.document_type,
                 title: req.body.title,
-                author: req.body.author,
+                author: req.body.author.split(","),
                 created_at: req.body.created_at,
                 description: req.body.description,
                 tag: req.body.tag,
@@ -318,7 +318,7 @@ app.post('/portfolio/document/edit/:id', ensureAuthenticated, (req, res) => {
     let document = {};
     document.document_type = req.body.document_type;
     document.title = req.body.title;
-    document.author = req.body.author;
+    document.author = req.body.author.split(",");
     document.created_at = req.body.created_at;
     document.description = req.body.description;
     document.tag = req.body.tag;

@@ -2,8 +2,7 @@ extends layout
 
 block content
     h1 Admin page
-    br
-    
+    br 
     //- toggle adding documents
     button.btn.btn-primary(type='button' data-toggle='collapse' data-target='#collapse1' aria-expanded='false' aria-controls='collapse1')
         | Add documents
@@ -11,7 +10,7 @@ block content
     #collapse1.collapse
         form(method='POST', action='/admin/addDocument', enctype='multipart/form-data')
             #form-group
-                label Document type:
+                label Document type:&nbsp;
                 select(name='document_type', required)
                     option.form-control(value='')
                     option.form-control(value='Lõputöö') Lõputöö
@@ -40,12 +39,15 @@ block content
                     option.form-control(value='Tekstiil') Tekstiil
                     option.form-control(value='Muu') Muu
                 br
+            #form-group.form-check
+                label.form-check-label(for='defaultCheck3') Active&nbsp;
+                input#defaultCheck3.form-control-input(name='status' type='checkbox' value='true')
             #form-group
                 input(type='file', name='fileupload')
-                input.btn.btn-primary(type='submit', value='Submit')
-            #form-group.form-check
-                label.form-check-label(for='defaultCheck3') Active
-                input#defaultCheck3.form-control-input(name='status' type='checkbox' value='true')
+            br
+            input.btn.btn-primary(type='submit', value='Submit')
+            br
+            hr
     //- toggle adding news
     button.btn.btn-primary(type='button' data-toggle='collapse' data-target='#collapse2' aria-expanded='false' aria-controls='collapse2')
         | Add news
@@ -62,10 +64,10 @@ block content
                 label Description:
                 textarea.form-control(name='description')
                 br
-            #form-group
-                input.btn.btn-primary(type='submit', value='Submit')
-        
-        //- toggle adding news
+            input.btn.btn-primary(type='submit', value='Submit')
+            br
+            hr
+    //- toggle adding services
     button.btn.btn-primary(type='button' data-toggle='collapse' data-target='#collapse3' aria-expanded='false' aria-controls='collapse3')
         | Add services
     p
@@ -78,14 +80,11 @@ block content
                 label Description:
                 textarea.form-control(name='description')
                 br
-            #form-group
-                input.btn.btn-primary(type='submit', value='Submit')
-        
+            input.btn.btn-primary(type='submit', value='Submit')
+            br
+            hr
         //- view unpublished docs 
         //- if user.username = 'admin'
     a.button.btn.btn-primary(href='/admin/unpublished') Unpublished docs
-    //- .row
-    //-     each document, i in documents
-    //-         title=document.title
 
         //- TODO superadmins/admin ACL's
