@@ -61,6 +61,8 @@ let Services = require('./models/services');
 //load view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+// app.set('views', path.join(__dirname, 'views/ejs'));
+// app.set('view engine', 'ejs');
 
 //body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
