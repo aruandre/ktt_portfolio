@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    h1 Students page
+    each document, i in documents
+        ul
+        li
+            p.author=document.author
+            //- TODO explode array with multiple names
+            //- if (typeof(document.author) == array)
+            //-     p array
+        

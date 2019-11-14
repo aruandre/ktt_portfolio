@@ -9,7 +9,18 @@ const passport = require('passport');
 const config = require('./config/database');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
+const fs = require('fs');
+const https = require('https');
+let acl = require('acl');
 
+
+//SSL certs
+let key = fs.readFileSync(__dirname + '/certs/cert.key');
+let cert = fs.readFileSync(__dirname + '/certs/cert.crt');
+let options = {
+    key: key,
+    cert: cert
+};
 
 //db connection
 mongoose.connect(config.database, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -27,6 +38,12 @@ db.on('error', (err) => {
 
 //init app
 const app = express();
+
+//
+acl = new acl(new acl.mongodbBackend(db, 'users'));
+acl.allow('acl', '/admin', '*');
+acl.addUserRoles('acl', 'basic');
+acl.middleware();
 
 //public folder
 app.use(express.static('./public'));
@@ -171,7 +188,7 @@ app.get('/logout', (req, res) => {
 
 
 //----------- ADMIN ---------------
-app.get('/admin', ensureAuthenticated, (req, res) => {
+app.get('/admin', acl.middleware(), ensureAuthenticated, (req, res) => {
     res.render('admin', {
     });
 });
@@ -238,20 +255,20 @@ app.post('/admin/addDocument', ensureAuthenticated, (req, res) => {
 
 //add news route
 app.post('/admin/addNews', ensureAuthenticated, (req, res) => {
-    new News({
-        title: req.body.title,
-        date: req.body.date,
-        description: req.body.description
-    }).save((err, news) => {
-        console.log(req);
-        if(err){
-            req.flash('danger', 'Data save failed!');
-            return;
-        } else {
-            req.flash('success', 'News added');
-            res.redirect('/admin');
-        }
-    });
+        new News({
+            title: req.body.title,
+            date: req.body.date,
+            description: req.body.description
+        }).save((err, news) => {
+            console.log(req);
+            if(err){
+                req.flash('danger', 'Data save failed!');
+                return;
+            } else {
+                req.flash('success', 'News added');
+                res.redirect('/admin');
+            }
+        });
 });
 
 //admin add services route
@@ -351,6 +368,19 @@ app.delete('/portfolio/document/:id', ensureAuthenticated, (req, res) => {
     });
 });
 
+// ---------- STUDENTS ----------
+//students home route
+app.get('/students', (req, res) => {
+    Document.find({ author:{$exists:true} }, (err, documents) => {
+        if(err){
+            console.log(err);
+        } else {
+            res.render('students', {
+                documents: documents
+            });
+        }
+    });
+});
 
 //----------- NEWS -----------
 //news route
@@ -474,6 +504,6 @@ app.get('/about', (req, res) => {
 
 //------------- SERVER -------------
 //start server
-app.listen(30000, () => {
+https.createServer(options, app).listen(30000, () => {
     console.log('Server listening on port 30000');
 });

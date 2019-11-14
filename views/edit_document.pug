@@ -5,7 +5,7 @@ block content
     form(method='POST', action='/portfolio/document/edit/' + document._id)
         //- enctype='multipart/form-data' adding this will break updating docs
         #form-group
-            label Document type: 
+            label Document type:&nbsp;
             select(name='document_type', required)
                 option.form-control(value='')
                 option.form-control(value='Lõputöö') Lõputöö
@@ -17,6 +17,7 @@ block content
             input.form-control(name='title', type='text', value=document.title, required)
         #form-group
             label Author: 
+            //- regex ([\")+([\]])
             input.form-control(name='author', type='text', value=document.author, required)
         #form-group
             label Created at: 
@@ -35,7 +36,7 @@ block content
                 option.form-control(value='Muu') Muu
             br
         #form-group.form-check
-            label.form-check-label Publish
+            label.form-check-label Publish&nbsp;
             input.form-control-input(name='status' type='checkbox' value='true')
         #form-group
             input(type='file', name='fileupload')
