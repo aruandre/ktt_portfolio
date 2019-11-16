@@ -11,7 +11,7 @@ body
             a.navbar-brand(href='/news') News
             a.navbar-brand(href='/services') Services
             .dropdown
-                a.dropbtn.dropdown-toggle(href='/portfolio' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
+                a.dropbtn.dropdown-toggle(href='/portfolio' role='button' aria-haspopup='true' aria-expanded='false')
                     | Portfolio
                 .dropdown-menu(aria-labelledby='dropbtn')
                     a.dropdown-item(href='/portfolio') Portfolio
@@ -24,14 +24,8 @@ body
             a.navbar-brand(href='/') Contact
             if user
                 a.navbar-brand(href='/logout') Logout
-
-                    //- TODO fix registration for superadmin only
                     //- if user.username='admin'
                     //-     a.navbar-brand(href='/register') Register
-            //- TODO search      
-            //- form.form-inline.my-2.my-lg-0(action='/search', method='GET')
-            //-     input.form-control.mr-sm-2(type='search' placeholder='Search' aria-label='Search')
-            //-     button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search
     .container
         != messages('message', locals)
         //- TODO display validation errors

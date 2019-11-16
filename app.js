@@ -11,8 +11,6 @@ const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const fs = require('fs');
 const https = require('https');
-let acl = require('acl');
-
 
 //SSL certs
 let key = fs.readFileSync(__dirname + '/certs/cert.key');
@@ -39,14 +37,8 @@ db.on('error', (err) => {
 //init app
 const app = express();
 
-//
-acl = new acl(new acl.mongodbBackend(db, 'users'));
-acl.allow('acl', '/admin', '*');
-acl.addUserRoles('acl', 'basic');
-acl.middleware();
-
 //public folder
-app.use(express.static('./public'));
+app.use(express.static('./public/uploads'));
 
 //set storage engine
 const storage = multer.diskStorage({
@@ -78,8 +70,6 @@ let Services = require('./models/services');
 //load view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-// app.set('views', path.join(__dirname, 'views/ejs'));
-// app.set('view engine', 'ejs');
 
 //body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -114,7 +104,7 @@ app.get('*', (req, res, next) => {
     next();
 });
 
-//ACL
+//authentication
 function ensureAuthenticated(req, res, next){
     if(req.isAuthenticated()){
         return next();
@@ -124,6 +114,17 @@ function ensureAuthenticated(req, res, next){
     }
 }
 
+//superadmin check
+function isAdmin(req, res, next){
+    if(req.isAuthenticated()){
+        if(req.user.role == 'superadmin'){
+            return next();
+        } else {
+            req.flash('danger', 'Action not allowed!');
+            res.redirect('/');
+        }
+    }
+}
 
 //------- ROUTES -------
 //home route
@@ -131,10 +132,9 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
-
 //------------- REGISTER -------------
 //register form
-app.get('/register', (req, res) => {
+app.get('/register', ensureAuthenticated, isAdmin, (req, res) => {
     res.render('register');
 });
 
@@ -190,7 +190,7 @@ app.get('/logout', (req, res) => {
 
 
 //----------- ADMIN ---------------
-app.get('/admin', acl.middleware(), ensureAuthenticated, (req, res) => {
+app.get('/admin', ensureAuthenticated, (req, res) => {
     res.render('admin', {
     });
 });
@@ -239,7 +239,8 @@ app.post('/admin/addDocument', ensureAuthenticated, (req, res) => {
                 created_at: req.body.created_at,
                 description: req.body.description,
                 tag: req.body.tag,
-                path: req.body.path,
+                //path: req.file.path,
+                path: req.file.path.replace(/\\/g, "/").substring('public'.length),
                 status: req.body.status
             }).save((err, doc) => {
                 console.log(req);
@@ -255,8 +256,8 @@ app.post('/admin/addDocument', ensureAuthenticated, (req, res) => {
     });
 });
 
-//add news route
-app.post('/admin/addNews', ensureAuthenticated, (req, res) => {
+//admin add news route
+app.post('/admin/addNews', ensureAuthenticated, isAdmin, (req, res) => {
         new News({
             title: req.body.title,
             date: req.body.date,
@@ -274,7 +275,7 @@ app.post('/admin/addNews', ensureAuthenticated, (req, res) => {
 });
 
 //admin add services route
-app.post('/admin/addService', ensureAuthenticated, (req, res) => {
+app.post('/admin/addService', ensureAuthenticated, isAdmin, (req, res) => {
     new Services({
         title: req.body.title,
         date: req.body.date,
@@ -292,7 +293,7 @@ app.post('/admin/addService', ensureAuthenticated, (req, res) => {
 });
 
 //admin get unpublished documents
-app.get('/admin/unpublished', ensureAuthenticated, (req, res) => {
+app.get('/admin/unpublished', ensureAuthenticated, isAdmin, (req, res) => {
     Document.find({ status: false }, (err, documents) => {
             res.render('unpublished', {
                 documents: documents
@@ -324,7 +325,7 @@ app.get('/portfolio/document/:id', (req, res) => {
 });
 
 //load edit form
-app.get('/portfolio/document/edit/:id', ensureAuthenticated, (req, res) => {
+app.get('/portfolio/document/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
     Document.findById(req.params.id, (err, document) => {
         res.render('edit_document', {
             document: document
@@ -333,7 +334,7 @@ app.get('/portfolio/document/edit/:id', ensureAuthenticated, (req, res) => {
 });
 
 //update submit POST route
-app.post('/portfolio/document/edit/:id', ensureAuthenticated, (req, res) => {
+app.post('/portfolio/document/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
     let document = {};
     document.document_type = req.body.document_type;
     document.title = req.body.title;
@@ -341,6 +342,7 @@ app.post('/portfolio/document/edit/:id', ensureAuthenticated, (req, res) => {
     document.created_at = req.body.created_at;
     document.description = req.body.description;
     document.tag = req.body.tag;
+    document.path = req.file.path;
     document.status = req.body.status;
     
     let query = {_id:req.params.id}
@@ -356,7 +358,7 @@ app.post('/portfolio/document/edit/:id', ensureAuthenticated, (req, res) => {
 });
 
 //delete document route
-app.delete('/portfolio/document/:id', ensureAuthenticated, (req, res) => {
+app.delete('/portfolio/document/:id', ensureAuthenticated, isAdmin, (req, res) => {
     if(!req.user._id){
         res.status(500).save();
     }
@@ -399,7 +401,7 @@ app.get('/news', (req, res) => {
 });
 
 // load edit form
-app.get('/news/edit/:id', ensureAuthenticated, (req, res) => {
+app.get('/news/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
     News.findById(req.params.id, (err, singleNew) => {
         res.render('edit_news', {
             singleNew: singleNew
@@ -408,7 +410,7 @@ app.get('/news/edit/:id', ensureAuthenticated, (req, res) => {
 });
 
 //delete news route
-app.delete('/news/edit/:id', ensureAuthenticated, (req, res) => {
+app.delete('/news/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
     if(!req.user._id){
         res.status(500).save();
     }
@@ -423,7 +425,7 @@ app.delete('/news/edit/:id', ensureAuthenticated, (req, res) => {
 });
 
 //update news route
-app.post('/news/edit/:id', ensureAuthenticated, (req, res) => {
+app.post('/news/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
     let news = {};
     news.title = req.body.title;
     news.date = req.body.date;
@@ -457,7 +459,7 @@ app.get('/services', (req, res) => {
 });
 
 // load edit form
-app.get('/services/edit/:id', ensureAuthenticated, (req, res) => {
+app.get('/services/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
     Services.findById(req.params.id, (err, service) => {
         res.render('edit_services', {
             service: service
@@ -466,7 +468,7 @@ app.get('/services/edit/:id', ensureAuthenticated, (req, res) => {
 });
 
 //update services route
-app.post('/services/edit/:id', ensureAuthenticated, (req, res) => {
+app.post('/services/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
     let services = {};
     services.title = req.body.title;
     services.description = req.body.description;
@@ -485,7 +487,7 @@ app.post('/services/edit/:id', ensureAuthenticated, (req, res) => {
 });
 
 //delete services route
-app.delete('/services/edit/:id', ensureAuthenticated, (req, res) => {
+app.delete('/services/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
     if(!req.user._id){
         res.status(500).save();
     }
