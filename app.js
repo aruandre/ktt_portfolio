@@ -200,30 +200,23 @@ app.post('/forgot', (req, res, next) => {
             });
         });
       }, (token, user, done) => {
-            // let smtpTransport = nodemailer.createTransport('SMTP', {
-            //     service: 'Gmail',
-            //     auth: {
-            //         user: 'andraru',
-            //         pass: '3Wnijuuser'
-            //     }
-            // });
             let smtpTransport = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 port: 465,
                 secure: true,
                 auth: {
                     type: 'OAuth2',
-                    user: 'aa.andrearu@gmail.com',
-                    clientId: '911300106380-pamabgr9smma61f8rdtae0d2hotc3dnu.apps.googleusercontent.com',
-                    clientSecret: 'oTzyBa9ziiivqYoP6PCWYeJ9',
-                    refreshToken: '1//04mivyAQps4gxCgYIARAAGAQSNwF-L9IrqC098VxLvSZzZrZzyVKd5NWgFAF01JFa2MTMmYx_QERPTnV9BM1nCiKLHVYFlFxsyWM',
-                    accessToken: 'ya29.Il-xB_M8wutbdVL7JAoWlGvyyU-2WuVxCJgi1UtJUWhPZpOcvuu8FRNP6T6LIKXLYgcymAZ4jSqNwBOEMZctFYrmMwEhS4ycGaASTetpB3Is3azzibR3jOil8rW8nH8HGA'
+                    user: '',
+                    clientId: '',
+                    clientSecret: '',
+                    refreshToken: '',
+                    accessToken: ''
                 }
             });
         let mailOptions = {
             to: user.email,
             from: 'passwordreset@demo.com',
-            subject: 'Node.js Password Reset',
+            subject: 'KTD Portfolio Password Reset',
             text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
                 'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
                 'http://' + req.headers.host + '/reset/' + token + '\n\n' +
