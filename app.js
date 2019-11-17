@@ -3,7 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 //const { check, validationResult } = require('express-validator');
-//const flash = require('connect-flash');
+const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
 const config = require('./config/database');
@@ -11,6 +11,10 @@ const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const fs = require('fs');
 const https = require('https');
+const nodemailer = require('nodemailer');
+const async = require('async');
+const crypto = require('crypto');
+const xoauth2 = require('xoauth2');
 
 //SSL certs
 let key = fs.readFileSync(__dirname + '/certs/cert.key');
@@ -38,7 +42,7 @@ db.on('error', (err) => {
 const app = express();
 
 //public folder
-app.use(express.static('./public/uploads'));
+app.use(express.static('./public/uploads/'));
 
 //set storage engine
 const storage = multer.diskStorage({
@@ -51,7 +55,7 @@ const storage = multer.diskStorage({
 //init upload
 const upload = multer({
     storage: storage,
-    limits: {fileSize: 10000000}, //10MB
+    limits: {fileSize: 20000000}, //10MB
     fileFilter: (req, file, cb) => {
         let ext = path.extname(file.originalname);
         if(ext !== '.png' || ext !== '.jpg' || ext !== '.jpeg' || ext !== '.pdf'){
@@ -59,7 +63,7 @@ const upload = multer({
         }
         cb(null, true)
     }
-}).single('fileupload');
+}).array('fileupload', 2);
 
 //bring in models
 let Document = require('./models/document');
@@ -166,6 +170,76 @@ app.post('/register', (req, res) => {
     });
 });
 
+//------------ FORGOT -------------
+app.get('/forgot', (req, res) => {
+    res.render('forgot', {
+        user: req.user
+    });
+});
+
+//------- FORGOT POST --------
+app.post('/forgot', (req, res, next) => {
+    async.waterfall([
+        (done) => {
+            crypto.randomBytes(20, (err, buf) => {
+                let token = buf.toString('hex');
+                done(err, token);
+            });
+        }, (token, done) => {
+        User.findOne({ email: req.body.email }, (err, user) => {
+            if (!user) {
+                req.flash('error', 'No account with that email address exists.');
+                return res.redirect('/forgot');
+            }
+  
+        user.resetPasswordToken = token;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+  
+        user.save((err) => {
+            done(err, token, user);
+            });
+        });
+      }, (token, user, done) => {
+            // let smtpTransport = nodemailer.createTransport('SMTP', {
+            //     service: 'Gmail',
+            //     auth: {
+            //         user: 'andraru',
+            //         pass: '3Wnijuuser'
+            //     }
+            // });
+            let smtpTransport = nodemailer.createTransport({
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true,
+                auth: {
+                    type: 'OAuth2',
+                    user: 'aa.andrearu@gmail.com',
+                    clientId: '911300106380-pamabgr9smma61f8rdtae0d2hotc3dnu.apps.googleusercontent.com',
+                    clientSecret: 'oTzyBa9ziiivqYoP6PCWYeJ9',
+                    refreshToken: '1//04mivyAQps4gxCgYIARAAGAQSNwF-L9IrqC098VxLvSZzZrZzyVKd5NWgFAF01JFa2MTMmYx_QERPTnV9BM1nCiKLHVYFlFxsyWM',
+                    accessToken: 'ya29.Il-xB_M8wutbdVL7JAoWlGvyyU-2WuVxCJgi1UtJUWhPZpOcvuu8FRNP6T6LIKXLYgcymAZ4jSqNwBOEMZctFYrmMwEhS4ycGaASTetpB3Is3azzibR3jOil8rW8nH8HGA'
+                }
+            });
+        let mailOptions = {
+            to: user.email,
+            from: 'passwordreset@demo.com',
+            subject: 'Node.js Password Reset',
+            text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+                'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+        };
+        smtpTransport.sendMail(mailOptions, (err) => {
+            req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+            done(err, 'done');
+        });
+        }
+    ], (err) => {
+        if (err) return next(err);
+        res.redirect('/forgot');
+    });
+});
+
 //------------ LOGIN --------------
 //login route
 app.get('/login', (req, res) => {
@@ -239,8 +313,8 @@ app.post('/admin/addDocument', ensureAuthenticated, (req, res) => {
                 created_at: req.body.created_at,
                 description: req.body.description,
                 tag: req.body.tag,
-                //path: req.file.path,
-                path: req.file.path.replace(/\\/g, "/").substring('public'.length),
+                //path: req.file.path.replace(/\\/g, "/").substring('public'.length),
+                path: req.files.path,
                 status: req.body.status
             }).save((err, doc) => {
                 console.log(req);
@@ -301,6 +375,21 @@ app.get('/admin/unpublished', ensureAuthenticated, isAdmin, (req, res) => {
     });
 });
 
+//---------- PROFILE -------------
+//login route
+app.get('/profile', ensureAuthenticated, (req, res) => {
+    User.find({}, (err, users) => {
+        if(err){
+            console.log(err);
+        } else {
+            res.render('profile', {
+                users: users
+            });
+        }
+    });
+});
+
+
 //---------- PORTFOLIO ----------------
 //portfolio home route
 app.get('/portfolio', (req, res) => {
@@ -342,7 +431,7 @@ app.post('/portfolio/document/edit/:id', ensureAuthenticated, isAdmin, (req, res
     document.created_at = req.body.created_at;
     document.description = req.body.description;
     document.tag = req.body.tag;
-    document.path = req.file.path;
+    //- document.path = req.file.path;
     document.status = req.body.status;
     
     let query = {_id:req.params.id}

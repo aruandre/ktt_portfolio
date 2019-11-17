@@ -19,13 +19,16 @@ body
                     a.dropdown-item(href='#') Design studio
                     a.dropdown-item(href='#') Internship
             if user
-                a.navbar-brand(href='/admin') Admin page
+                .dropdown
+                    a.dropbtn.dropdown-toggle(href='/admin' role='button' aria-haspopup='true' aria-expanded='false')
+                        | Admin
+                    .dropdown-menu(aria-labelledby='dropbtn')
+                        a.dropdown-item(href='/admin') Admin page
+                        a.dropdown-item(href='/profile') My profile
+                        a.dropdown-item(href='/register') Register
+                        a.dropdown-item(href='/logout') Logout
             a.navbar-brand(href='/about') About
             a.navbar-brand(href='/') Contact
-            if user
-                a.navbar-brand(href='/logout') Logout
-                    //- if user.username='admin'
-                    //-     a.navbar-brand(href='/register') Register
     .container
         != messages('message', locals)
         //- TODO display validation errors
