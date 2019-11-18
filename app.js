@@ -145,10 +145,12 @@ app.get('/register', ensureAuthenticated, isAdmin, (req, res) => {
 //register process
 app.post('/register', (req, res) => {
     const username = req.body.username;
+    const email = req.body.email;
     const password = req.body.password;
 
     let newUser = new User({
         username: username,
+        email: email,
         password: password
     });
         

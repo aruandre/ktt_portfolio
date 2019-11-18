@@ -1,6 +1,16 @@
 extends layout
 
 block content
+    nav(aria-label='breadcrumb')
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/portfolio') Portfolio page
+            li.breadcrumb-item
+                a(href='#') Single document page
+            li.breadcrumb-item
+                a(href='#') Edit document page
     br
     form(method='POST', action='/portfolio/document/edit/' + document._id)
         //- enctype='multipart/form-data' adding this will break updating docs

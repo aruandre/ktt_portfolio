@@ -1,6 +1,14 @@
 extends layout
 
 block content
+    nav(aria-label='breadcrumb')
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/portfolio') Portfolio page
+            li.breadcrumb-item
+                a(href='#') Single document page
     h1 single document page
     br
     p Document type: #{document.document_type}
