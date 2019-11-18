@@ -2,4 +2,3 @@ node_modules
 public
 certs
 credentials
-config/database.js
