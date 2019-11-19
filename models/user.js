@@ -25,6 +25,15 @@ const UserSchema = mongoose.Schema({
     },
     resetPasswordExpires:{
         type: Date
+    },
+    firstname:{
+        type: String
+    },
+    lastname:{
+        type: String
+    },
+    personalPortfolio:{
+        type: String
     }
 });
 

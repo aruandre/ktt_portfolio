@@ -2,14 +2,11 @@ extends layout
 
 block content
     h1 Students page
-    each student, s in students
-        ul
-        li
-            p.student=student.firstname + student.lastname
-            p Personal portfolio
-                a()
+    #users
+        each user, i in users
+            p Username: #{user.username}
+            a(href='https://' + user.personalPortfolio) Personal portfolio
             hr
-            //- TODO explode array with multiple names
-            //- if (typeof(document.author) == array)
-            //-     p array
-        
+                //- TODO explode array with multiple names
+                //- if (typeof(document.author) == array)
+                //-     p array        

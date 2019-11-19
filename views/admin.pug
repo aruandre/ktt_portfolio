@@ -89,8 +89,63 @@ block content
             input.btn.btn-primary(type='submit', value='Submit')
             br
             hr
+    //- toggle adding users
+    button.btn.btn-primary(type='button' data-toggle='collapse' data-target='#collapse4' aria-expanded='false' aria-controls='collapse4')
+        | Add users/students
+    p
+    #collapse4.collapse
+        form(method='POST', action='/admin/addUser')
+            #form-group
+                label User role:&nbsp;
+                select(name='role', required)
+                    option.form-control(value='basic') User
+                    option.form-control(value='admin') Admin
+            #form-group
+                label Firstname:
+                input.form-control(name='firstname', type='text', required)
+            #form-group
+                label Lastname:
+                input.form-control(name='lastname', type='text', required)
+            #form-group
+                label Username:
+                input.form-control(name='username', type='text')
+            #form-group
+                label Email:
+                input.form-control(name='email', type='text')
+            #form-group
+                label Personal portfolio link:
+                input.form-control(name='personalPortfolio')
+            #form-group
+                label Password:
+                input.form-control#password(name='password', type='password')
+            label(for='show_password')
+                input#show_password(type='checkbox' name='show_password')
+                | &#x9;Show password
+            script.
+                // Listen for click events
+                document.addEventListener('click', function (event) {
+                    // If the clicked element isn't our show password checkbox, bail
+                    if (event.target.id !== 'show_password') return;
+                    // Get the password field
+                    var password = document.querySelector('#password');
+                    if (!password) return;
+                    // Check if the password should be shown or hidden
+                    if (event.target.checked) {
+                    // Show the password
+                        password.type = 'text';
+                    } else {
+                    // Hide the password
+                        password.type = 'password';
+                    }
+                }, false);
+            #form-group
+                label Confirm password:
+                input.form-control(name='confirm', type='password')
+            br
+            input.btn.btn-primary(type='submit', value='Submit')
+            br
+            hr
         //- view unpublished docs 
-        //- if user.username = 'admin'
     a.button.btn.btn-primary(href='/admin/unpublished') Unpublished docs
 
         //- TODO superadmins/admin ACL's

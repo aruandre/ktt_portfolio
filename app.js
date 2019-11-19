@@ -138,19 +138,27 @@ app.get('/', (req, res) => {
 
 //------------- REGISTER -------------
 //register form
-app.get('/register', ensureAuthenticated, isAdmin, (req, res) => {
-    res.render('register');
+app.get('/addUSer', ensureAuthenticated, isAdmin, (req, res) => {
+    res.render('admin');
 });
 
 //register process
-app.post('/register', (req, res) => {
+app.post('/admin/addUser', ensureAuthenticated, isAdmin, (req, res) => {
+    const firstname = req.body.firstname;
+    const lastname = req.body.lastname;
+    const role = req.body.role;
     const username = req.body.username;
     const email = req.body.email;
+    const personalPortfolio = req.body.personalPortfolio;
     const password = req.body.password;
 
     let newUser = new User({
+        firstname: firstname,
+        lastname: lastname,
+        role: role,
         username: username,
         email: email,
+        personalPortfolio: personalPortfolio,
         password: password
     });
         
@@ -165,7 +173,7 @@ app.post('/register', (req, res) => {
                     console.log(err);
                     return;
                 } else {
-                    res.redirect('/login');
+                    res.redirect('/admin');
                 }
             });
         });
@@ -442,9 +450,13 @@ app.post('/admin/addService', ensureAuthenticated, isAdmin, (req, res) => {
 //admin get unpublished documents
 app.get('/admin/unpublished', ensureAuthenticated, isAdmin, (req, res) => {
     Document.find({ status: false }, (err, documents) => {
+        if(err){
+            console.log(err);
+        } else {    
             res.render('unpublished', {
                 documents: documents
             });
+        }
     });
 });
 
@@ -537,12 +549,12 @@ app.delete('/portfolio/document/:id', ensureAuthenticated, isAdmin, (req, res) =
 // ---------- STUDENTS ----------
 //students home route
 app.get('/students', (req, res) => {
-    Document.find({ author:{$exists:true} }, (err, documents) => {
+    User.find({ role: 'basic' }, (err, users) => {
         if(err){
             console.log(err);
         } else {
             res.render('students', {
-                documents: documents
+                users: users
             });
         }
     });
