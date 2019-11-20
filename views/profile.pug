@@ -1,6 +1,12 @@
 extends layout
 
 block content
+    nav(aria-label='breadcrumb')
+            ol.breadcrumb
+                li.breadcrumb-item
+                    a(href='/') Home
+                li.breadcrumb-item
+                    a(href='/profile') Profile
     h1 Profile page
     br
     p Username: #{user.username}

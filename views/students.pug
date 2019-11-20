@@ -1,11 +1,20 @@
 extends layout
 
 block content
+    nav(aria-label='breadcrumb')
+            ol.breadcrumb
+                li.breadcrumb-item
+                    a(href='/') Home
+                li.breadcrumb-item
+                    a(href='/students') Students
     h1 Students page
+    br
+    //- TODO sort by year
     #users
         each user, i in users
-            p Username: #{user.username}
-            a(href='https://' + user.personalPortfolio) Personal portfolio
+            p Name: #{user.firstname + ' ' + user.lastname}
+            p Personal portfolio:&nbsp;
+                a(href='https://' + user.personalPortfolio)|#{user.personalPortfolio}
             hr
                 //- TODO explode array with multiple names
                 //- if (typeof(document.author) == array)

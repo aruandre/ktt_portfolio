@@ -6,7 +6,7 @@ block content
                 li.breadcrumb-item
                     a(href='/') Home
                 li.breadcrumb-item
-                    a(href='/portfolio') Portfolio page
+                    a(href='/admin') Admin
                 li.breadcrumb-item
                     a(href='/admin/unpublished') Unpublished
     h1 Unpublished docs
@@ -23,6 +23,6 @@ block content
                 p Document tags: #{document.tag}
                 p Document status: #{document.status}
         if user
-            a.btn.btn-primary(href='/portfolio/document/edit/'+ document._id) Edit
+            a.btn.btn-primary(href='/admin/unpublished/edit/'+ document._id) Edit
             a.btn.btn-danger.delete-document(href='#', data-id=document._id) Delete
         br

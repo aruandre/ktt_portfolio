@@ -9,6 +9,7 @@ block content
                     a(href='/admin') Admin page
     h1 Admin page
     br 
+    != messages('message', locals)
     //- toggle adding documents
     button.btn.btn-primary(type='button' data-toggle='collapse' data-target='#collapse1' aria-expanded='false' aria-controls='collapse1')
         | Add documents
@@ -51,7 +52,9 @@ block content
             #form-group
                 input(type='file', name='fileupload' multiple accept='image/*')
             br
-            input.btn.btn-primary(type='submit', value='Submit')
+            input.btn.btn-success(type='submit', value='Submit')
+            input.btn.btn-warning(type='reset', value='Reset')
+            a.button.btn.btn-danger(href='/admin/', value='Cancel') Cancel
             br
             hr
     //- toggle adding news
@@ -70,7 +73,9 @@ block content
                 label Description:
                 textarea.form-control(name='description')
                 br
-            input.btn.btn-primary(type='submit', value='Submit')
+            input.btn.btn-success(type='submit', value='Submit')
+            input.btn.btn-warning(type='reset', value='Reset')
+            a.button.btn.btn-danger(href='/admin/', value='Cancel') Cancel
             br
             hr
     //- toggle adding services
@@ -86,7 +91,9 @@ block content
                 label Description:
                 textarea.form-control(name='description')
                 br
-            input.btn.btn-primary(type='submit', value='Submit')
+            input.btn.btn-success(type='submit', value='Submit')
+            input.btn.btn-warning(type='reset', value='Reset')
+            a.button.btn.btn-danger(href='/admin/', value='Cancel') Cancel
             br
             hr
     //- toggle adding users
@@ -142,7 +149,9 @@ block content
                 label Confirm password:
                 input.form-control(name='confirm', type='password')
             br
-            input.btn.btn-primary(type='submit', value='Submit')
+            input.btn.btn-success(type='submit', value='Submit')
+            input.btn.btn-warning(type='reset', value='Reset')
+            a.button.btn.btn-danger(href='/admin/', value='Cancel') Cancel
             br
             hr
         //- view unpublished docs 

@@ -6,13 +6,13 @@ block content
             li.breadcrumb-item
                 a(href='/') Home
             li.breadcrumb-item
-                a(href='/portfolio') Portfolio
+                a(href='/admin') Admin
             li.breadcrumb-item
-                a(href='/portfolio/document/' + document._id) Single document
+                a(href='/admin/unpublished/') Unpublished
             li.breadcrumb-item
                 a(href='#') Edit
     br
-    form(method='POST', action='/portfolio/document/edit/' + document._id)
+    form(method='POST', action='/admin/unpublished/edit/' + document._id)
         //- enctype='multipart/form-data' adding this will break updating docs
         #form-group
             label Document type:&nbsp;
@@ -53,4 +53,4 @@ block content
             br
             input.btn.btn-success(type='submit', value='Submit')
             input.btn.btn-warning(type='reset', value='Reset')
-            a.button.btn.btn-danger(href='/portfolio/document/' + document._id, value='Cancel') Cancel
+            a.button.btn.btn-danger(href='/admin/unpublished/', value='Cancel') Cancel

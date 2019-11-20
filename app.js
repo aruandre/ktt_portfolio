@@ -151,6 +151,7 @@ app.post('/admin/addUser', ensureAuthenticated, isAdmin, (req, res) => {
     const email = req.body.email;
     const personalPortfolio = req.body.personalPortfolio;
     const password = req.body.password;
+    const confirm = req.body.confirm;
 
     let newUser = new User({
         firstname: firstname,
@@ -159,9 +160,19 @@ app.post('/admin/addUser', ensureAuthenticated, isAdmin, (req, res) => {
         username: username,
         email: email,
         personalPortfolio: personalPortfolio,
-        password: password
+        password: password,
+        confirm: confirm
     });
-        
+    
+    //TODO check if user exists
+
+    // if(password == '' || confirm == ''){
+    //     req.flash('danger', 'Password can not be empty');
+    // }
+    // if(password !== confirm){
+    //     req.flash('danger', 'Passwords do not match');
+    // }
+
     bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(newUser.password, salt, (err, hash) => {
             if(err){
@@ -178,6 +189,7 @@ app.post('/admin/addUser', ensureAuthenticated, isAdmin, (req, res) => {
             });
         });
     });
+
 });
 
 //------------ FORGOT -------------
@@ -456,6 +468,39 @@ app.get('/admin/unpublished', ensureAuthenticated, isAdmin, (req, res) => {
             res.render('unpublished', {
                 documents: documents
             });
+        }
+    });
+});
+
+//load edit form
+app.get('/admin/unpublished/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
+    Document.findById(req.params.id, (err, document) => {
+        res.render('edit_unpublished', {
+            document: document
+        });
+    });
+});
+
+//route to /admin/unpublished/edit/:id
+app.post('/admin/unpublished/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
+    let document = {};
+    document.document_type = req.body.document_type;
+    document.title = req.body.title;
+    document.author = req.body.author.split(",");
+    document.created_at = req.body.created_at;
+    document.description = req.body.description;
+    document.tag = req.body.tag;
+    //- document.path = req.file.path;
+    document.status = req.body.status;
+    
+    let query = {_id:req.params.id}
+    Document.updateOne(query, document, (err) => {
+        if(err){
+            console.log(err);
+            return;
+        } else {
+            req.flash('success', 'Document published');
+            res.redirect('/admin/unpublished');
         }
     });
 });
