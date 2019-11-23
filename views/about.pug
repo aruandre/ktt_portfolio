@@ -1,6 +1,12 @@
 extends layout
 
 block content
+    nav(aria-label='breadcrumb')
+            ol.breadcrumb
+                li.breadcrumb-item
+                    a(href='/') Home
+                li.breadcrumb-item
+                    a(href='/about') About
     br
     h1 About page
     br

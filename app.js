@@ -16,6 +16,9 @@ const async = require('async');
 const crypto = require('crypto');
 const xoauth2 = require('xoauth2');
 
+//import helpers
+const helper = require('./helper/helper.js');
+
 //SSL certs
 let key = fs.readFileSync(__dirname + '/certs/cert.key');
 let cert = fs.readFileSync(__dirname + '/certs/cert.crt');
@@ -108,28 +111,6 @@ app.get('*', (req, res, next) => {
     next();
 });
 
-//authentication
-function ensureAuthenticated(req, res, next){
-    if(req.isAuthenticated()){
-        return next();
-    } else {
-        req.flash('danger', 'Action not allowed!');
-        res.redirect('/');
-    }
-}
-
-//superadmin check
-function isAdmin(req, res, next){
-    if(req.isAuthenticated()){
-        if(req.user.role == 'superadmin'){
-            return next();
-        } else {
-            req.flash('danger', 'Action not allowed!');
-            res.redirect('/');
-        }
-    }
-}
-
 //------- ROUTES -------
 //home route
 app.get('/', (req, res) => {
@@ -138,12 +119,12 @@ app.get('/', (req, res) => {
 
 //------------- REGISTER -------------
 //register form
-app.get('/addUSer', ensureAuthenticated, isAdmin, (req, res) => {
+app.get('/addUSer', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     res.render('admin');
 });
 
 //register process
-app.post('/admin/addUser', ensureAuthenticated, isAdmin, (req, res) => {
+app.post('/admin/addUser', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     const firstname = req.body.firstname;
     const lastname = req.body.lastname;
     const role = req.body.role;
@@ -201,8 +182,7 @@ app.get('/forgot', (req, res) => {
 
 //------- FORGOT POST --------
 app.post('/forgot', (req, res, next) => {
-    async.waterfall([
-        (done) => {
+    async.waterfall([(done) => {
             crypto.randomBytes(20, (err, buf) => {
                 let token = buf.toString('hex');
                 done(err, token);
@@ -221,7 +201,7 @@ app.post('/forgot', (req, res, next) => {
             done(err, token, user);
             });
         });
-      }, (token, user, done) => {
+        }, (token, user, done) => {
             let smtpTransport = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 port: 465,
@@ -270,8 +250,7 @@ app.get('/reset/:token', (req, res) => {
 
 //------------ POST RESET --------------
 app.post('/reset/:token', (req, res) => {
-    async.waterfall([
-        (done) => {
+    async.waterfall([(done) => {
         User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, (err, user) => {
             if(!user) {
                 req.flash('error', 'Password reset token is invalid or has expired.');
@@ -301,21 +280,20 @@ app.post('/reset/:token', (req, res) => {
             });
         });
         });
-        },
-        (user, done) => {
-            let smtpTransport = nodemailer.createTransport({
-                host: 'smtp.gmail.com',
-                port: 465,
-                secure: true,
-                auth: {
-                    type: 'OAuth2',
-                    user: '',
-                    clientId: '',
-                    clientSecret: '',
-                    refreshToken: '',
-                    accessToken: ''
-                }
-            });
+    }, (user, done) => {
+        let smtpTransport = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                type: 'OAuth2',
+                user: '',
+                clientId: '',
+                clientSecret: '',
+                refreshToken: '',
+                accessToken: ''
+            }
+        });
         let mailOptions = {
             to: user.email,
             from: 'passwordreset@demo.com',
@@ -327,10 +305,10 @@ app.post('/reset/:token', (req, res) => {
             req.flash('success', 'Success! Your password has been changed.');
             done(err);
         });
-        }
+    }
     ], (err) => {
         res.redirect('/');
-    });
+        });
 });
 
 //------------ LOGIN --------------
@@ -357,7 +335,7 @@ app.get('/logout', (req, res) => {
 
 
 //----------- ADMIN ---------------
-app.get('/admin', ensureAuthenticated, (req, res) => {
+app.get('/admin', helper.ensureAuthenticated, (req, res) => {
     res.render('admin', {
     });
 });
@@ -392,7 +370,7 @@ app.get('/admin', ensureAuthenticated, (req, res) => {
 //     });
 
 //add documents route
-app.post('/admin/addDocument', ensureAuthenticated, (req, res) => {
+app.post('/admin/addDocument', helper.ensureAuthenticated, (req, res) => {
     upload(req, res, (err) => {
         if(err){
             console.log(err);
@@ -424,7 +402,7 @@ app.post('/admin/addDocument', ensureAuthenticated, (req, res) => {
 });
 
 //admin add news route
-app.post('/admin/addNews', ensureAuthenticated, isAdmin, (req, res) => {
+app.post('/admin/addNews', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
         new News({
             title: req.body.title,
             date: req.body.date,
@@ -442,7 +420,7 @@ app.post('/admin/addNews', ensureAuthenticated, isAdmin, (req, res) => {
 });
 
 //admin add services route
-app.post('/admin/addService', ensureAuthenticated, isAdmin, (req, res) => {
+app.post('/admin/addService', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     new Services({
         title: req.body.title,
         date: req.body.date,
@@ -460,7 +438,7 @@ app.post('/admin/addService', ensureAuthenticated, isAdmin, (req, res) => {
 });
 
 //admin get unpublished documents
-app.get('/admin/unpublished', ensureAuthenticated, isAdmin, (req, res) => {
+app.get('/admin/unpublished', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     Document.find({ status: false }, (err, documents) => {
         if(err){
             console.log(err);
@@ -473,7 +451,7 @@ app.get('/admin/unpublished', ensureAuthenticated, isAdmin, (req, res) => {
 });
 
 //load edit form
-app.get('/admin/unpublished/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
+app.get('/admin/unpublished/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     Document.findById(req.params.id, (err, document) => {
         res.render('edit_unpublished', {
             document: document
@@ -482,7 +460,7 @@ app.get('/admin/unpublished/edit/:id', ensureAuthenticated, isAdmin, (req, res) 
 });
 
 //route to /admin/unpublished/edit/:id
-app.post('/admin/unpublished/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
+app.post('/admin/unpublished/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     let document = {};
     document.document_type = req.body.document_type;
     document.title = req.body.title;
@@ -507,7 +485,7 @@ app.post('/admin/unpublished/edit/:id', ensureAuthenticated, isAdmin, (req, res)
 
 //---------- PROFILE -------------
 //login route
-app.get('/profile', ensureAuthenticated, (req, res) => {
+app.get('/profile', helper.ensureAuthenticated, (req, res) => {
     User.find({}, (err, users) => {
         if(err){
             console.log(err);
@@ -544,7 +522,7 @@ app.get('/portfolio/document/:id', (req, res) => {
 });
 
 //load edit form
-app.get('/portfolio/document/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
+app.get('/portfolio/document/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     Document.findById(req.params.id, (err, document) => {
         res.render('edit_document', {
             document: document
@@ -553,7 +531,7 @@ app.get('/portfolio/document/edit/:id', ensureAuthenticated, isAdmin, (req, res)
 });
 
 //update submit POST route
-app.post('/portfolio/document/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
+app.post('/portfolio/document/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     let document = {};
     document.document_type = req.body.document_type;
     document.title = req.body.title;
@@ -577,7 +555,7 @@ app.post('/portfolio/document/edit/:id', ensureAuthenticated, isAdmin, (req, res
 });
 
 //delete document route
-app.delete('/portfolio/document/:id', ensureAuthenticated, isAdmin, (req, res) => {
+app.delete('/portfolio/document/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     if(!req.user._id){
         res.status(500).save();
     }
@@ -620,7 +598,7 @@ app.get('/news', (req, res) => {
 });
 
 // load edit form
-app.get('/news/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
+app.get('/news/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     News.findById(req.params.id, (err, singleNew) => {
         res.render('edit_news', {
             singleNew: singleNew
@@ -629,7 +607,7 @@ app.get('/news/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
 });
 
 //delete news route
-app.delete('/news/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
+app.delete('/news/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     if(!req.user._id){
         res.status(500).save();
     }
@@ -644,7 +622,7 @@ app.delete('/news/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
 });
 
 //update news route
-app.post('/news/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
+app.post('/news/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     let news = {};
     news.title = req.body.title;
     news.date = req.body.date;
@@ -678,7 +656,7 @@ app.get('/services', (req, res) => {
 });
 
 // load edit form
-app.get('/services/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
+app.get('/services/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     Services.findById(req.params.id, (err, service) => {
         res.render('edit_services', {
             service: service
@@ -687,7 +665,7 @@ app.get('/services/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
 });
 
 //update services route
-app.post('/services/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
+app.post('/services/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     let services = {};
     services.title = req.body.title;
     services.description = req.body.description;
@@ -706,7 +684,7 @@ app.post('/services/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
 });
 
 //delete services route
-app.delete('/services/edit/:id', ensureAuthenticated, isAdmin, (req, res) => {
+app.delete('/services/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     if(!req.user._id){
         res.status(500).save();
     }
