@@ -16,6 +16,7 @@ const async = require('async');
 const crypto = require('crypto');
 //const xoauth2 = require('xoauth2');
 const Router = require('router');
+const morgan = require('morgan');
 
 //import helpers
 const helper = require('./helper/helper.js');
@@ -44,6 +45,11 @@ db.on('error', (err) => {
 
 //init app
 const app = express();
+
+//logger
+let accessLogStream = fs.createWriteStream(path.join(__dirname,'access.log'));
+// setup the logger 
+app.use(morgan('combined', {stream : accessLogStream }));
 
 //public folder
 app.use(express.static('./public/uploads/'));
