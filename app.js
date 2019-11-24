@@ -14,7 +14,8 @@ const https = require('https');
 const nodemailer = require('nodemailer');
 const async = require('async');
 const crypto = require('crypto');
-const xoauth2 = require('xoauth2');
+//const xoauth2 = require('xoauth2');
+const Router = require('router');
 
 //import helpers
 const helper = require('./helper/helper.js');
@@ -484,7 +485,7 @@ app.post('/admin/unpublished/edit/:id', helper.ensureAuthenticated, helper.isAdm
 });
 
 //---------- PROFILE -------------
-//login route
+//profile route
 app.get('/profile', helper.ensureAuthenticated, (req, res) => {
     User.find({}, (err, users) => {
         if(err){
@@ -497,6 +498,14 @@ app.get('/profile', helper.ensureAuthenticated, (req, res) => {
     });
 });
 
+//edit profile route
+app.get('/profile/edit/:id', helper.ensureAuthenticated, (req, res) => {
+    User.findById(req.params.id, (err, users) => {
+        res.render('edit_profile', {
+            users: users
+        });
+    });
+});
 
 //---------- PORTFOLIO ----------------
 //portfolio home route

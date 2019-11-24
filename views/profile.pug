@@ -8,8 +8,13 @@ block content
                 li.breadcrumb-item
                     a(href='/profile') Profile
     h1 Profile page
+
     br
     p Username: #{user.username}
     p Password: #{user.password} 
     p Email: #{user.email}
     p Role: #{user.role}
+    br
+    if user
+        a.btn.btn-primary(href='/profile/edit/' + user._id) Edit my profile
+        br
