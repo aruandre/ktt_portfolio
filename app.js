@@ -559,26 +559,34 @@ app.get('/portfolio/document/edit/:id', helper.ensureAuthenticated, helper.isAdm
 
 //update submit POST route
 app.post('/portfolio/document/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    let document = {};
-    document.document_type = req.body.document_type;
-    document.title = req.body.title;
-    document.author = req.body.author.split(",");
-    document.created_at = req.body.created_at;
-    document.description = req.body.description;
-    document.tag = req.body.tag;
-    //- document.path = req.file.path;
-    document.status = req.body.status;
-    
-    let query = {_id:req.params.id}
-    Document.updateOne(query, document, (err) => {
+    upload(req, res, (err) => {
         if(err){
             console.log(err);
+            req.flash('danger', 'File upload failed!');
             return;
         } else {
-            req.flash('success', 'Document updated');
-            res.redirect('/portfolio');
+            let document = {};
+            document.document_type = req.body.document_type;
+            document.title = req.body.title;
+            document.author = req.body.author.split(",");
+            document.created_at = req.body.created_at;
+            document.description = req.body.description;
+            document.tag = req.body.tag;
+            //console.log(req.file.path);
+            //document.path = req.file.path;
+            document.status = req.body.status;
+            let query = {_id:req.params.id}
+            Document.updateOne(query, document, (err) => {
+                if(err){
+                    console.log(err);
+                    return;
+                } else {
+                    req.flash('success', 'Document updated');
+                    res.redirect('/portfolio');
+                }
+            });
         }
-    });
+    })
 });
 
 //delete document route
@@ -728,6 +736,11 @@ app.delete('/services/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (re
 //------------ ABOUT ---------------
 app.get('/about', (req, res) => {
     res.render('about');
+});
+
+//------------ CONTACT ---------------
+app.get('/contacts', (req, res) => {
+    res.render('contacts');
 });
 
 //------------- SERVER -------------

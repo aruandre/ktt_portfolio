@@ -13,8 +13,8 @@ block content
     p Username: #{user.username}
     p Password: #{user.password} 
     p Email: #{user.email}
-    p |
-        Personal portfolio:| a(href=user.personalPortfolio)|#{user.personalPortfolio}
+    p Personal portfolio: 
+        a(href='https://' + user.personalPortfolio)|#{user.personalPortfolio}
     p Role: #{user.role}
     br
     if user
