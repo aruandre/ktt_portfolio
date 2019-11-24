@@ -507,6 +507,24 @@ app.get('/profile/edit/:id', helper.ensureAuthenticated, (req, res) => {
     });
 });
 
+//update submit POST route
+app.post('/profile/edit/:id', helper.ensureAuthenticated, (req, res) => {
+    let user = {};
+    user.email = req.body.email;
+    user.personalPortfolio = req.body.personalPortfolio;
+    
+    let query = {_id:req.params.id}
+    User.updateOne(query, user, (err) => {
+        if(err){
+            console.log(err);
+            return;
+        } else {
+            req.flash('success', 'Profile updated');
+            res.redirect('/profile');
+        }
+    });
+});
+
 //---------- PORTFOLIO ----------------
 //portfolio home route
 app.get('/portfolio', (req, res) => {
