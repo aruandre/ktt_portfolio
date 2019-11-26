@@ -126,7 +126,7 @@ app.get('/', (req, res) => {
 
 //------------- REGISTER -------------
 //register form
-app.get('/addUSer', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
+app.get('/addUser', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
     res.render('admin');
 });
 
@@ -377,7 +377,7 @@ app.get('/admin', helper.ensureAuthenticated, (req, res) => {
 //     });
 
 //add documents route
-app.post('/admin/addDocument', helper.ensureAuthenticated, (req, res) => {
+app.post('/admin/addDocument', helper.ensureAuthenticated, (req, res, next) => {
     upload(req, res, (err) => {
         if(err){
             console.log(err);
@@ -578,8 +578,8 @@ app.post('/portfolio/document/edit/:id', helper.ensureAuthenticated, helper.isAd
             document.created_at = req.body.created_at;
             document.description = req.body.description;
             document.tag = req.body.tag;
-            //console.log(req.file.path);
-            //document.path = req.file.path;
+            //console.log(req.files.path);
+            document.path = req.files.path;
             document.status = req.body.status;
             let query = {_id:req.params.id}
             Document.updateOne(query, document, (err) => {
@@ -621,6 +621,21 @@ app.get('/students', (req, res) => {
                 users: users
             });
         }
+    });
+});
+
+//delete students/users route
+app.delete('/students/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
+    if(!req.user._id){
+        res.status(500).save();
+    }
+    let query = {_id:req.params.id}
+
+    User.deleteOne(query, (err) => {
+        if(err){
+            console.log(err);
+        }
+        res.send('Success');
     });
 });
 
