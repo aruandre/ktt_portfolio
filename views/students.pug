@@ -15,6 +15,7 @@ block content
             p Name: #{user.firstname + ' ' + user.lastname}
             p Personal portfolio:&nbsp;
                 a(href='https://' + user.personalPortfolio)|#{user.personalPortfolio}
+            p Course: #{user.course}
             if user
                 a.btn.btn-primary(href='/profile/edit/'+ user._id) Edit
                 a.btn.btn-danger.delete-users(href='#', data-id=user._id) Delete

@@ -138,6 +138,7 @@ app.post('/admin/addUser', helper.ensureAuthenticated, helper.isAdmin, (req, res
     const username = req.body.username;
     const email = req.body.email;
     const personalPortfolio = req.body.personalPortfolio;
+    const course = req.body.course;
     const password = req.body.password;
     const confirm = req.body.confirm;
 
@@ -148,6 +149,7 @@ app.post('/admin/addUser', helper.ensureAuthenticated, helper.isAdmin, (req, res
         username: username,
         email: email,
         personalPortfolio: personalPortfolio,
+        course: course,
         password: password,
         confirm: confirm
     });
@@ -762,6 +764,12 @@ app.get('/about', (req, res) => {
 //------------ CONTACT ---------------
 app.get('/contacts', (req, res) => {
     res.render('contacts');
+});
+
+//------------- * ------------------
+//route to error page
+app.get('*', (req, res) => {
+    res.render('error');
 });
 
 //------------- SERVER -------------

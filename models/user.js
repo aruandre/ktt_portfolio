@@ -34,6 +34,9 @@ const UserSchema = mongoose.Schema({
     },
     personalPortfolio:{
         type: String
+    },
+    course:{
+        type: String
     }
 });
 
