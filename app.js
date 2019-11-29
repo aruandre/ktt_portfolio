@@ -51,33 +51,9 @@ let accessLogStream = fs.createWriteStream(path.join(__dirname,'access.log'));
 // setup the logger 
 app.use(morgan('combined', {stream : accessLogStream }));
 
-//public folder
-app.use(express.static('./public/uploads/'));
-
-//set storage engine
-const storage = multer.diskStorage({
-    destination: './public/uploads/',
-    filename: (req, file, cb) => {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
-});
-
-//init upload
-const upload = multer({
-    storage: storage,
-    limits: {fileSize: 20000000}, //10MB
-    fileFilter: (req, file, cb) => {
-        let ext = path.extname(file.originalname);
-        if(ext !== '.png' || ext !== '.jpg' || ext !== '.jpeg' || ext !== '.pdf'){
-            req.flash('danger', 'File type not allowed!');
-        }
-        cb(null, true)
-    }
-}).array('fileupload', 2);
-
 //bring in models
 let Document = require('./models/document');
-let User = require('./models/user');
+let Students = require('./models/students');
 let News = require('./models/news');
 let Services = require('./models/services');
 
@@ -124,68 +100,11 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
-//------------- REGISTER -------------
-//register form
-app.get('/addUser', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    res.render('admin');
-});
-
-//register process
-app.post('/admin/addUser', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    const firstname = req.body.firstname;
-    const lastname = req.body.lastname;
-    const role = req.body.role;
-    const username = req.body.username;
-    const email = req.body.email;
-    const personalPortfolio = req.body.personalPortfolio;
-    const course = req.body.course;
-    const password = req.body.password;
-    const confirm = req.body.confirm;
-
-    let newUser = new User({
-        firstname: firstname,
-        lastname: lastname,
-        role: role,
-        username: username,
-        email: email,
-        personalPortfolio: personalPortfolio,
-        course: course,
-        password: password,
-        confirm: confirm
-    });
-    
-    //TODO check if user exists
-
-    // if(password == '' || confirm == ''){
-    //     req.flash('danger', 'Password can not be empty');
-    // }
-    // if(password !== confirm){
-    //     req.flash('danger', 'Passwords do not match');
-    // }
-
-    bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-            if(err){
-                console.log(err);
-            }
-            newUser.password = hash;
-            newUser.save((err) => {
-                if(err){
-                    console.log(err);
-                    return;
-                } else {
-                    res.redirect('/admin');
-                }
-            });
-        });
-    });
-
-});
 
 //------------ FORGOT -------------
 app.get('/forgot', (req, res) => {
     res.render('forgot', {
-        user: req.user
+        student: req.student
     });
 });
 
@@ -197,27 +116,27 @@ app.post('/forgot', (req, res, next) => {
                 done(err, token);
             });
         }, (token, done) => {
-        User.findOne({ email: req.body.email }, (err, user) => {
-            if (!user) {
+        Student.findOne({ email: req.body.email }, (err, student) => {
+            if (!student) {
                 req.flash('error', 'No account with that email address exists.');
                 return res.redirect('/forgot');
             }
   
-        user.resetPasswordToken = token;
-        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+        student.resetPasswordToken = token;
+        student.resetPasswordExpires = Date.now() + 3600000; // 1 hour
   
-        user.save((err) => {
-            done(err, token, user);
+        student.save((err) => {
+            done(err, token, student);
             });
         });
-        }, (token, user, done) => {
+        }, (token, student, done) => {
             let smtpTransport = nodemailer.createTransport({
                 host: 'smtp.gmail.com',
                 port: 465,
                 secure: true,
                 auth: {
                     type: 'OAuth2',
-                    user: '',
+                    student: '',
                     clientId: '',
                     clientSecret: '',
                     refreshToken: '',
@@ -225,7 +144,7 @@ app.post('/forgot', (req, res, next) => {
                 }
             });
         let mailOptions = {
-            to: user.email,
+            to: student.email,
             from: 'passwordreset@demo.com',
             subject: 'KTD Portfolio Password Reset',
             text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
@@ -234,7 +153,7 @@ app.post('/forgot', (req, res, next) => {
                 'If you did not request this, please ignore this email and your password will remain unchanged.\n'
         };
         smtpTransport.sendMail(mailOptions, (err) => {
-            req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+            req.flash('info', 'An e-mail has been sent to ' + student.email + ' with further instructions.');
             done(err, 'done');
         });
         }
@@ -246,13 +165,13 @@ app.post('/forgot', (req, res, next) => {
 
 //------------ GET RESET --------------
 app.get('/reset/:token', (req, res) => {
-    User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } },(err, user) => {
-        if(!user) {
+    Student.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } },(err, student) => {
+        if(!student) {
             req.flash('error', 'Password reset token is invalid or has expired.');
             return res.redirect('/forgot');
     }
     res.render('reset', {
-        user: req.user
+        student: req.student
         });
     });
 });
@@ -260,43 +179,43 @@ app.get('/reset/:token', (req, res) => {
 //------------ POST RESET --------------
 app.post('/reset/:token', (req, res) => {
     async.waterfall([(done) => {
-        User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, (err, user) => {
-            if(!user) {
+        Student.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, (err, student) => {
+            if(!student) {
                 req.flash('error', 'Password reset token is invalid or has expired.');
                 return res.redirect('back');
             }
   
-        user.password = req.body.password;
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpires = undefined;
+        student.password = req.body.password;
+        student.resetPasswordToken = undefined;
+        student.resetPasswordExpires = undefined;
        
         bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(user.password, salt, (err, hash) => {
+            bcrypt.hash(student.password, salt, (err, hash) => {
                 if(err){
                     console.log(err);
                 }
-                user.password = hash;
-                user.save((err) => {
+                student.password = hash;
+                student.save((err) => {
                     if(err){
                         console.log(err);
                         return;
                     } else {
-                        req.logIn(user, (err) => {
-                            done(err, user);
+                        req.logIn(student, (err) => {
+                            done(err, student);
                         }); 
                     }
                 });
             });
         });
         });
-    }, (user, done) => {
+    }, (student, done) => {
         let smtpTransport = nodemailer.createTransport({
             host: 'smtp.gmail.com',
             port: 465,
             secure: true,
             auth: {
                 type: 'OAuth2',
-                user: '',
+                student: '',
                 clientId: '',
                 clientSecret: '',
                 refreshToken: '',
@@ -304,11 +223,11 @@ app.post('/reset/:token', (req, res) => {
             }
         });
         let mailOptions = {
-            to: user.email,
+            to: student.email,
             from: 'passwordreset@demo.com',
             subject: 'Your password has been changed',
             text: 'Hello,\n\n' +
-            'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
+            'This is a confirmation that the password for your account ' + student.email + ' has just been changed.\n'
         };
         smtpTransport.sendMail(mailOptions, (err) => {
             req.flash('success', 'Success! Your password has been changed.');
@@ -343,434 +262,241 @@ app.get('/logout', (req, res) => {
 });
 
 
-//----------- ADMIN ---------------
-app.get('/admin', helper.ensureAuthenticated, (req, res) => {
-    res.render('admin', {
-    });
-});
-
-// app.post('/admin/add', ensureAuthenticated,
-// //TODO fix validation
-// // [
-//     // check('document_type').isEmpty().withMessage('Document type is required'),
-//     // check('title').isEmpty().withMessage('Document title is required'),
-//     // check('author').isEmpty().withMessage('Document author is required')
-//     // ], 
-//     (req, res) => { 
-//         //get errors
-//         // let errors = validationResult(req);
-//         // if(!errors.isEmpty()){
-//             //     res.render('admin', {
-//                 //         errors:errors
-//                 //     });
-//                 // } else {
-//                     let document = new Document();
-//                     document.document_type = req.body.document_type;
-//                     document.save((err) => {
-//                         if(err){
-//                             console.log(err);
-//                             return;
-//                         } else {
-//                             req.flash('success', 'Document added');
-//                             res.redirect('/admin');
-//                         }
-//         });
-//         // }
+// //----------- ADMIN ---------------
+// app.get('/admin', helper.ensureAuthenticated, (req, res) => {
+//     res.render('admin', {
 //     });
+// });
 
-//add documents route
-app.post('/admin/addDocument', helper.ensureAuthenticated, (req, res, next) => {
-    upload(req, res, (err) => {
-        if(err){
-            console.log(err);
-            req.flash('danger', 'File upload failed!');
-            return;
-        } else {
-            new Document({
-                document_type: req.body.document_type,
-                title: req.body.title,
-                author: req.body.author.split(","),
-                created_at: req.body.created_at,
-                description: req.body.description,
-                tag: req.body.tag,
-                //path: req.file.path.replace(/\\/g, "/").substring('public'.length),
-                path: req.files.path,
-                status: req.body.status
-            }).save((err, doc) => {
-                console.log(req);
-                if(err){
-                    req.flash('danger', 'Data save failed!');
-                    return;
-                } else {
-                    req.flash('success', 'Document added');
-                    res.redirect('/admin');
-                }
-            });
-        }
-    });
-});
+// // app.post('/admin/add', ensureAuthenticated,
+// // //TODO fix validation
+// // // [
+// //     // check('document_type').isEmpty().withMessage('Document type is required'),
+// //     // check('title').isEmpty().withMessage('Document title is required'),
+// //     // check('author').isEmpty().withMessage('Document author is required')
+// //     // ], 
+// //     (req, res) => { 
+// //         //get errors
+// //         // let errors = validationResult(req);
+// //         // if(!errors.isEmpty()){
+// //             //     res.render('admin', {
+// //                 //         errors:errors
+// //                 //     });
+// //                 // } else {
+// //                     let document = new Document();
+// //                     document.document_type = req.body.document_type;
+// //                     document.save((err) => {
+// //                         if(err){
+// //                             console.log(err);
+// //                             return;
+// //                         } else {
+// //                             req.flash('success', 'Document added');
+// //                             res.redirect('/admin');
+// //                         }
+// //         });
+// //         // }
+// //     });
 
-//admin add news route
-app.post('/admin/addNews', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-        new News({
-            title: req.body.title,
-            date: req.body.date,
-            description: req.body.description
-        }).save((err, news) => {
-            console.log(req);
-            if(err){
-                req.flash('danger', 'Data save failed!');
-                return;
-            } else {
-                req.flash('success', 'News added');
-                res.redirect('/admin');
-            }
-        });
-});
+// //add documents route
+// app.post('/admin/addDocument', helper.ensureAuthenticated, (req, res, next) => {
+//     upload(req, res, (err) => {
+//         if(err){
+//             console.log(err);
+//             req.flash('danger', 'File upload failed!');
+//             return;
+//         } else {
+//             new Document({
+//                 document_type: req.body.document_type,
+//                 title: req.body.title,
+//                 author: req.body.author.split(","),
+//                 created_at: req.body.created_at,
+//                 description: req.body.description,
+//                 tag: req.body.tag,
+//                 path: req.file.path.replace(/\\/g, "/").substring('public'.length),
+//                 //path: req.files.path,
+//                 status: req.body.status
+//             }).save((err, doc) => {
+//                 console.log(req);
+//                 if(err){
+//                     req.flash('danger', 'Data save failed!');
+//                     return;
+//                 } else {
+//                     req.flash('success', 'Document added');
+//                     res.redirect('/admin');
+//                 }
+//             });
+//         }
+//     });
+// });
 
-//admin add services route
-app.post('/admin/addService', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    new Services({
-        title: req.body.title,
-        date: req.body.date,
-        description: req.body.description
-    }).save((err, news) => {
-        console.log(req);
-        if(err){
-            req.flash('danger', 'Service save failed!');
-            return;
-        } else {
-            req.flash('success', 'New service added');
-            res.redirect('/admin');
-        }
-    });
-});
+// //admin add news route
+// app.post('/admin/addNews', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
+//         new News({
+//             title: req.body.title,
+//             date: req.body.date,
+//             description: req.body.description
+//         }).save((err, news) => {
+//             console.log(req);
+//             if(err){
+//                 req.flash('danger', 'Data save failed!');
+//                 return;
+//             } else {
+//                 req.flash('success', 'News added');
+//                 res.redirect('/admin');
+//             }
+//         });
+// });
 
-//admin get unpublished documents
-app.get('/admin/unpublished', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    Document.find({ status: false }, (err, documents) => {
-        if(err){
-            console.log(err);
-        } else {    
-            res.render('unpublished', {
-                documents: documents
-            });
-        }
-    });
-});
+// //admin add services route
+// app.post('/admin/addService', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
+//     new Services({
+//         title: req.body.title,
+//         date: req.body.date,
+//         description: req.body.description
+//     }).save((err, news) => {
+//         console.log(req);
+//         if(err){
+//             req.flash('danger', 'Service save failed!');
+//             return;
+//         } else {
+//             req.flash('success', 'New service added');
+//             res.redirect('/admin');
+//         }
+//     });
+// });
 
-//load edit form
-app.get('/admin/unpublished/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    Document.findById(req.params.id, (err, document) => {
-        res.render('edit_unpublished', {
-            document: document
-        });
-    });
-});
+// //admin get unpublished documents
+// app.get('/admin/unpublished', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
+//     Document.find({ status: false }, (err, documents) => {
+//         if(err){
+//             console.log(err);
+//         } else {    
+//             res.render('unpublished', {
+//                 documents: documents
+//             });
+//         }
+//     });
+// });
 
-//route to /admin/unpublished/edit/:id
-app.post('/admin/unpublished/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    let document = {};
-    document.document_type = req.body.document_type;
-    document.title = req.body.title;
-    document.author = req.body.author.split(",");
-    document.created_at = req.body.created_at;
-    document.description = req.body.description;
-    document.tag = req.body.tag;
-    //- document.path = req.file.path;
-    document.status = req.body.status;
+// //load edit form
+// app.get('/admin/unpublished/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
+//     Document.findById(req.params.id, (err, document) => {
+//         res.render('edit_unpublished', {
+//             document: document
+//         });
+//     });
+// });
+
+// //route to /admin/unpublished/edit/:id
+// app.post('/admin/unpublished/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
+//     let document = {};
+//     document.document_type = req.body.document_type;
+//     document.title = req.body.title;
+//     document.author = req.body.author.split(",");
+//     document.created_at = req.body.created_at;
+//     document.description = req.body.description;
+//     document.tag = req.body.tag;
+//     //- document.path = req.file.path;
+//     document.status = req.body.status;
     
-    let query = {_id:req.params.id}
-    Document.updateOne(query, document, (err) => {
-        if(err){
-            console.log(err);
-            return;
-        } else {
-            req.flash('success', 'Document published');
-            res.redirect('/admin/unpublished');
-        }
-    });
-});
+//     let query = {_id:req.params.id}
+//     Document.updateOne(query, document, (err) => {
+//         if(err){
+//             console.log(err);
+//             return;
+//         } else {
+//             req.flash('success', 'Document published');
+//             res.redirect('/admin/unpublished');
+//         }
+//     });
+// });
+
+// //register process
+// app.post('/admin/addUser', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
+//     const firstname = req.body.firstname;
+//     const lastname = req.body.lastname;
+//     const role = req.body.role;
+//     const username = req.body.username;
+//     const email = req.body.email;
+//     const personalPortfolio = req.body.personalPortfolio;
+//     const course = req.body.course;
+//     const password = req.body.password;
+//     const confirm = req.body.confirm;
+
+//     let newStudent = new Student({
+//         firstname: firstname,
+//         lastname: lastname,
+//         role: role,
+//         username: username,
+//         email: email,
+//         personalPortfolio: personalPortfolio,
+//         course: course,
+//         password: password,
+//         confirm: confirm
+//     });
+    
+//     //TODO check if user exists
+
+//     // if(password == '' || confirm == ''){
+//     //     req.flash('danger', 'Password can not be empty');
+//     // }
+//     // if(password !== confirm){
+//     //     req.flash('danger', 'Passwords do not match');
+//     // }
+
+//     bcrypt.genSalt(10, (err, salt) => {
+//         bcrypt.hash(newStudent.password, salt, (err, hash) => {
+//             if(err){
+//                 console.log(err);
+//             }
+//             newStudent.password = hash;
+//             newStudent.save((err) => {
+//                 if(err){
+//                     console.log(err);
+//                     return;
+//                 } else {
+//                     res.redirect('/admin');
+//                 }
+//             });
+//         });
+//     });
+// });
+let adminRoute = require('./routes/admin');
+app.use('/admin', adminRoute);
 
 //---------- PROFILE -------------
-//profile route
-app.get('/profile', helper.ensureAuthenticated, (req, res) => {
-    User.find({}, (err, users) => {
-        if(err){
-            console.log(err);
-        } else {
-            res.render('profile', {
-                users: users
-            });
-        }
-    });
-});
-
-//edit profile route
-app.get('/profile/edit/:id', helper.ensureAuthenticated, (req, res) => {
-    User.findById(req.params.id, (err, users) => {
-        res.render('edit_profile', {
-            users: users
-        });
-    });
-});
-
-//update submit POST route
-app.post('/profile/edit/:id', helper.ensureAuthenticated, (req, res) => {
-    let user = {};
-    user.email = req.body.email;
-    user.personalPortfolio = req.body.personalPortfolio;
-    
-    let query = {_id:req.params.id}
-    User.updateOne(query, user, (err) => {
-        if(err){
-            console.log(err);
-            return;
-        } else {
-            req.flash('success', 'Profile updated');
-            res.redirect('/profile');
-        }
-    });
-});
+let profile = require('./routes/profile');
+app.use('/profile', profile);
 
 //---------- PORTFOLIO ----------------
-//portfolio home route
-app.get('/portfolio', (req, res) => {
-    Document.find({ status: true }, (err, documents) => {
-        if(err){
-            console.log(err);
-        } else {
-            res.render('portfolio', {
-                documents: documents
-            });
-        }
-    });
-});
-
-//get single document
-app.get('/portfolio/document/:id', (req, res) => {
-    Document.findById(req.params.id, (err, document) => {
-        res.render('single_document', {
-            document: document
-        });
-    });
-});
-
-//load edit form
-app.get('/portfolio/document/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    Document.findById(req.params.id, (err, document) => {
-        res.render('edit_document', {
-            document: document
-        });
-    });
-});
-
-//update submit POST route
-app.post('/portfolio/document/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    upload(req, res, (err) => {
-        if(err){
-            console.log(err);
-            req.flash('danger', 'File upload failed!');
-            return;
-        } else {
-            let document = {};
-            document.document_type = req.body.document_type;
-            document.title = req.body.title;
-            document.author = req.body.author.split(",");
-            document.created_at = req.body.created_at;
-            document.description = req.body.description;
-            document.tag = req.body.tag;
-            //console.log(req.files.path);
-            document.path = req.files.path;
-            document.status = req.body.status;
-            let query = {_id:req.params.id}
-            Document.updateOne(query, document, (err) => {
-                if(err){
-                    console.log(err);
-                    return;
-                } else {
-                    req.flash('success', 'Document updated');
-                    res.redirect('/portfolio');
-                }
-            });
-        }
-    })
-});
-
-//delete document route
-app.delete('/portfolio/document/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    if(!req.user._id){
-        res.status(500).save();
-    }
-    let query = {_id:req.params.id}
-
-    Document.deleteOne(query, (err) => {
-        if(err){
-            console.log(err);
-        }
-        res.send('Success');
-    });
-});
+let portfolio = require('./routes/portfolio');
+app.use('/portfolio', portfolio);
 
 // ---------- STUDENTS ----------
-//students home route
-app.get('/students', (req, res) => {
-    User.find({ role: 'basic' }, (err, users) => {
-        if(err){
-            console.log(err);
-        } else {
-            res.render('students', {
-                users: users
-            });
-        }
-    });
-});
+let students = require('./routes/students');
+app.use('/students', students);
 
-//delete students/users route
-app.delete('/students/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    if(!req.user._id){
-        res.status(500).save();
-    }
-    let query = {_id:req.params.id}
+//------------ NEWS ----------------
+let news = require('./routes/news');
+app.use('/news', news);
 
-    User.deleteOne(query, (err) => {
-        if(err){
-            console.log(err);
-        }
-        res.send('Success');
-    });
-});
-
-//----------- NEWS -----------
-//news route
-app.get('/news', (req, res) => {
-    News.find({}, (err, news) => {
-        if(err){
-            console.log(err);
-        } else {
-            res.render('news', {
-                news: news
-            });
-        }
-    });
-});
-
-// load edit form
-app.get('/news/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    News.findById(req.params.id, (err, singleNew) => {
-        res.render('edit_news', {
-            singleNew: singleNew
-        });
-    });
-});
-
-//delete news route
-app.delete('/news/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    if(!req.user._id){
-        res.status(500).save();
-    }
-    let query = {_id:req.params.id}
-
-    News.deleteOne(query, (err) => {
-        if(err){
-            console.log(err);
-        }
-        res.send('Success');
-    });
-});
-
-//update news route
-app.post('/news/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    let news = {};
-    news.title = req.body.title;
-    news.date = req.body.date;
-    news.description = req.body.description;
-    
-    let query = {_id:req.params.id}
-
-    News.updateOne(query, news, (err) => {
-        if(err){
-            console.log(err);
-            return;
-        } else {
-            req.flash('success', 'Document updated');
-            res.redirect('/news');
-        }
-    });
-});
-
-//------------ SERVICES ------------
-//get services route
-app.get('/services', (req, res) => {
-    Services.find({}, (err, services) => {
-        if(err){
-            console.log(err);
-        } else {
-            res.render('services', {
-                services: services
-            });
-        }
-    });
-});
-
-// load edit form
-app.get('/services/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    Services.findById(req.params.id, (err, service) => {
-        res.render('edit_services', {
-            service: service
-        });
-    });
-});
-
-//update services route
-app.post('/services/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    let services = {};
-    services.title = req.body.title;
-    services.description = req.body.description;
-    
-    let query = {_id:req.params.id}
-    
-    Services.updateOne(query, services, (err) => {
-        if(err){
-            console.log(err);
-            return;
-        } else {
-            req.flash('success', 'Service updated');
-            res.redirect('/services');
-        }
-    });
-});
-
-//delete services route
-app.delete('/services/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    if(!req.user._id){
-        res.status(500).save();
-    }
-    let query = {_id:req.params.id}
-
-    Services.deleteOne(query, (err) => {
-        if(err){
-            console.log(err);
-        }
-        res.send('Success');
-    });
-});
+//------------ SERVICES ----------------
+let services = require('./routes/services');
+app.use('/services', services);
 
 //------------ ABOUT ---------------
-app.get('/about', (req, res) => {
-    res.render('about');
-});
+let about = require('./routes/about');
+app.use('/about', about);
 
 //------------ CONTACT ---------------
-app.get('/contacts', (req, res) => {
-    res.render('contacts');
-});
+let contacts = require('./routes/contacts');
+app.use('/contacts', contacts);
 
-//------------- * ------------------
 //route to error page
 app.get('*', (req, res) => {
     res.render('error');
 });
+
 
 //------------- SERVER -------------
 //start server

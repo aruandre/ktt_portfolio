@@ -1,0 +1,63 @@
+const express = require('express');
+const router = express.Router();
+const helper = require('../helper/helper');
+let Students = require('../models/students');
+
+// ---------- STUDENTS ----------
+//students home route
+router.get('/', (req, res) => {
+    Students.find({ role: 'basic' }, (err, students) => {
+        if(err){
+            console.log(err);
+        } else {
+            res.render('students', {
+                students: students
+            });
+        }
+    });
+});
+
+// load edit form
+router.get('/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
+    Students.findById(req.params.id, (err, student) => {
+        res.render('edit_students', {
+            student: student
+        });
+    });
+});
+
+//update students route
+router.post('/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
+    let students = {};
+    students.email = req.body.email;
+    students.personalPortfolio = req.body.personalPortfolio;
+    
+    let query = {_id:req.params.id}
+    
+    Students.updateOne(query, students, (err) => {
+        if(err){
+            console.log(err);
+            return;
+        } else {
+            req.flash('success', 'Student info updated');
+            res.redirect('/students');
+        }
+    });
+});
+
+//delete students/users route
+router.delete('/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
+    if(!req.user._id){
+        res.status(500).save();
+    }
+    let query = {_id:req.params.id}
+
+    Students.deleteOne(query, (err) => {
+        if(err){
+            console.log(err);
+        }
+        res.send('Success');
+    });
+});
+
+module.exports = router;
