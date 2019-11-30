@@ -37,7 +37,9 @@ db.on('error', (err) => {
 const app = express();
 
 //logger
-let accessLogStream = fs.createWriteStream(path.join(__dirname,'access.log'));
+let logDir = path.join(__dirname, 'log');
+fs.existsSync(logDir) || fs.mkdirSync(logDir);
+let accessLogStream = fs.createWriteStream(logDir + '/accesslog' + '-' + new Date().toJSON().slice(0,10) + '.log',{ path: logDir });
 // setup the logger 
 app.use(morgan('combined', {stream : accessLogStream }));
 

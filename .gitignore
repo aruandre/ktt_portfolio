@@ -1,5 +1,4 @@
 node_modules
 public
 certs
-credentials
-access.log
+log

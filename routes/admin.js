@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const helper = require('../helper/helper');
-let Document = require('../models/document');
+const bcrypt = require('bcryptjs');
 let News = require('../models/news');
+let Document = require('../models/document');
 let Services = require('../models/services');
 let Students = require('../models/students');
-const bcrypt = require('bcryptjs');
 
 //----------- ADMIN ---------------
 router.get('/', helper.ensureAuthenticated, (req, res) => {
