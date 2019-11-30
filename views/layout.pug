@@ -4,7 +4,7 @@ html
     title KTD | Portfolio
     link(rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.css')
 body
-    nav.navbar.navbar-expand-md(style='background-color: #e3f2fd;')
+    nav.navbar.navbar-expand-md
         a.navbar-brand-home(href='/') KTD Portfolio
         ul.navbar-nav.mr-auto
         nav.my-2.my-lg-0
@@ -38,9 +38,41 @@ body
         block content
         br
     footer
-        br
-        p Copyright &copy; 2019
-        br
+        .mt-5.pt-5.pb-5.footer
+            .footer-container
+                .row
+                    .col-lg-5.col-xs-12.about-company
+                        h2 About
+                        p.pr-5.text-white-50
+                        | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam ac ante mollis quam tristique convallis
+                        p
+                        a(href='#')
+                            i.fa.fa-facebook-square.mr-1
+                        a(href='#')
+                            i.fa.fa-linkedin-square
+                    .col-lg-3.col-xs-12.links
+                        h2.mt-lg-0.mt-sm-3 Site links
+                        ul.m-0.p-0
+                        li
+                            a(href='/news') News
+                        li
+                            a(href='/services') Services
+                        li
+                            a(href='/portfolio') Portfolio
+                    .col-lg-4.col-xs-12.location
+                        h2.mt-lg-0.mt-sm-4 Location
+                        p Lihula mnt 12 90507 Haapsalu Estonia
+                        p.mb-0
+                        i.fa.fa-phone.mr-3
+                        | (+372) 472 0240
+                        p
+                        i.fa.fa-envelope-o.mr-3
+                        | kolledz@hk.tlu.ee
+                .row.mt-5
+                    .col.copyright
+                        p
+                            small.text-white-50 &copy; 2019. All Rights Reserved.
+
     script(src='https://code.jquery.com/jquery-3.4.1.min.js')
     script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
-    script(src='/js/main.js')
+    script(src='/js/delete.js')
