@@ -17,13 +17,15 @@ block content
     #collapse1.collapse
         form(method='POST', action='/admin/addDocument', enctype='multipart/form-data')
             #form-group
-                label Document type:&nbsp;
-                select(name='document_type', required)
-                    option.form-control(value='')
-                    option.form-control(value='Lõputöö') Lõputöö
-                    option.form-control(value='Seminaritöö') Seminaritöö
-                    option.form-control(value='Praktika aruanne') Praktika aruanne
-                    option.form-control(value='Muu') Muu
+                .input-group.mb-3
+                    .input-group-prepend
+                        label.input-group-text(for='document_type') Document type:&nbsp;
+                        select(name='document_type', required)
+                            option.selected Choose...
+                            option.form-control(value='Lõputöö') Lõputöö
+                            option.form-control(value='Seminaritöö') Seminaritöö
+                            option.form-control(value='Praktika aruanne') Praktika aruanne
+                            option.form-control(value='Muu') Muu
             #form-group
                 label Document title:
                 input.form-control(name='title', type='text', required)
@@ -35,7 +37,7 @@ block content
                 input.form-control(name='created_at', type='date')
             #form-group
                 label Description:
-                textarea.form-control(name='description')
+                textarea.form-control(name='description', type='text')
             #form-group
                 label Tags:
                 br
@@ -49,6 +51,7 @@ block content
             #form-group.form-check
                 label.form-check-label(for='defaultCheck3') Publish&nbsp;
                 input#defaultCheck3.form-control-input(name='status' type='checkbox' value='true')
+            //- prepend not showing added file name
             #form-group
                 input(type='file', name='fileupload' multiple accept='image/*')
             br
@@ -65,7 +68,7 @@ block content
         form(method='POST', action='/admin/addNews')
             #form-group
                 label News title:
-                input.form-control(name='title', type='text', required)
+                input.form-control(name='title', type='text')
             #form-group
                 label Date:
                 input.form-control(name='date', type='date')
@@ -103,10 +106,13 @@ block content
     #collapse4.collapse
         form(method='POST', action='/admin/addUser')
             #form-group
-                label User role:&nbsp;
-                select(name='role', required)
-                    option.form-control(value='basic') User
-                    option.form-control(value='admin') Admin
+                .input-group.mb-3
+                    .input-group-prepend
+                        label.input-group-text(for='role') User role:&nbsp;
+                        select(name='role')
+                            option.selected Choose...
+                            option.form-control(value='basic') User
+                            option.form-control(value='admin') Admin
             #form-group
                 label Firstname:
                 input.form-control(name='firstname', type='text', required)
@@ -121,36 +127,44 @@ block content
                 input.form-control(name='email', type='text')
             #form-group
                 label Course:
-                input.form-control(name='course', type='text')
+            .input-group
+                .input-group-prepend
+                    span.input-group-text(id='') KTD
+                input.form-control(type='number', name='course')
             #form-group
                 label Personal portfolio link:
-                input.form-control(name='personalPortfolio')
+            .input-group
+                .input-group-prepend
+                    span.input-group-text(id='') https://
+                input.form-control(tpye='text' name='personalPortfolio')
             #form-group
                 label Password:
                 input.form-control#password(name='password', type='password')
+            #form-group
+                label Confirm password:
+                input.form-control#confirm(name='confirm', type='password')
             label(for='show_password')
                 input#show_password(type='checkbox' name='show_password')
                 | &#x9;Show password
             script.
-                // Listen for click events
                 document.addEventListener('click', function (event) {
                     // If the clicked element isn't our show password checkbox, bail
                     if (event.target.id !== 'show_password') return;
                     // Get the password field
                     var password = document.querySelector('#password');
+                    var confirm = document.querySelector('#confirm');
                     if (!password) return;
                     // Check if the password should be shown or hidden
                     if (event.target.checked) {
-                    // Show the password
+                    // Show password
                         password.type = 'text';
+                        confirm.type = 'text';
                     } else {
-                    // Hide the password
+                    // Hide password
                         password.type = 'password';
+                        confirm.type = 'password';
                     }
                 }, false);
-            #form-group
-                label Confirm password:
-                input.form-control(name='confirm', type='password')
             br
             input.btn.btn-success(type='submit', value='Submit')
             input.btn.btn-warning(type='reset', value='Reset')

@@ -13,35 +13,6 @@ router.get('/', helper.ensureAuthenticated, (req, res) => {
     });
 });
 
-// app.post('/add', ensureAuthenticated,
-// //TODO fix validation
-// // [
-//     // check('document_type').isEmpty().withMessage('Document type is required'),
-//     // check('title').isEmpty().withMessage('Document title is required'),
-//     // check('author').isEmpty().withMessage('Document author is required')
-//     // ], 
-//     (req, res) => { 
-//         //get errors
-//         // let errors = validationResult(req);
-//         // if(!errors.isEmpty()){
-//             //     res.render('admin', {
-//                 //         errors:errors
-//                 //     });
-//                 // } else {
-//                     let document = new Document();
-//                     document.document_type = req.body.document_type;
-//                     document.save((err) => {
-//                         if(err){
-//                             console.log(err);
-//                             return;
-//                         } else {
-//                             req.flash('success', 'Document added');
-//                             res.redirect('/admin');
-//                         }
-//         });
-//         // }
-//     });
-
 //add documents route
 router.post('/addDocument', helper.ensureAuthenticated, (req, res, next) => {
     helper.upload(req, res, (err) => {

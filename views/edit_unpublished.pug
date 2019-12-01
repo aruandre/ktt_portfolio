@@ -15,13 +15,15 @@ block content
     form(method='POST', action='/admin/unpublished/edit/' + document._id)
         //- enctype='multipart/form-data' adding this will break updating docs
         #form-group
-            label Document type:&nbsp;
-            select(name='document_type', required)
-                option.form-control(value='')
-                option.form-control(value='Lõputöö') Lõputöö
-                option.form-control(value='Seminaritöö') Seminaritöö
-                option.form-control(value='Praktika aruanne') Praktika aruanne
-                option.form-control(value='Muu') Muu
+            .input-group.mb-3
+                .input-group-prepend
+                    label.input-group-text(for='document_type') Document type:&nbsp;
+                    select(name='document_type', required)
+                        option.selected Choose...
+                        option.form-control(value='Lõputöö') Lõputöö
+                        option.form-control(value='Seminaritöö') Seminaritöö
+                        option.form-control(value='Praktika aruanne') Praktika aruanne
+                        option.form-control(value='Muu') Muu
         #form-group
             label Document title: 
             input.form-control(name='title', type='text', value=document.title, required)
