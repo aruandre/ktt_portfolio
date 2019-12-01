@@ -85,6 +85,10 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
+//---------- PORTFOLIO ----------------
+let seminaritoodRoute = require('./routes/seminaritood');
+app.use('/seminaritood', seminaritoodRoute);
+
 //------------ FORGOT --------------
 let forgotRoute = require('./routes/forgot');
 app.use('/forgot', forgotRoute);
