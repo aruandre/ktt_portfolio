@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 let Document = require('../models/document');
 
-//---------- SEMINARITÖÖ ----------------
-//seminaritööd home route
+//---------- LÕPUTÖÖD ----------------
+//lõputööd home route
 router.get('/', (req, res) => {
-    Document.find({ status: true, document_type: 'Seminaritöö' }, (err, documents) => {
+    Document.find({ status: true, document_type: 'Lõputöö' }, (err, documents) => {
         if(err){
             console.log(err);
         } else {
-            res.render('seminaritood', {
+            res.render('loputood', {
                 documents: documents
             });
         }

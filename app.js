@@ -85,7 +85,27 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
-//---------- PORTFOLIO ----------------
+//---------- PRAKTIKA ----------------
+let tekstiilRoute = require('./routes/tekstiil');
+app.use('/tekstiil', tekstiilRoute);
+
+//---------- PRAKTIKA ----------------
+let puitRoute = require('./routes/puit');
+app.use('/puit', puitRoute);
+
+//---------- PRAKTIKA ----------------
+let metallRoute = require('./routes/metall');
+app.use('/metall', metallRoute);
+
+//---------- PRAKTIKA ----------------
+let praktikadRoute = require('./routes/praktikad');
+app.use('/praktikad', praktikadRoute);
+
+//---------- SEMINARITÖÖ ----------------
+let loputoodRoute = require('./routes/loputood');
+app.use('/loputood', loputoodRoute);
+
+//---------- SEMINARITÖÖ ----------------
 let seminaritoodRoute = require('./routes/seminaritood');
 app.use('/seminaritood', seminaritoodRoute);
 

@@ -7,14 +7,21 @@ block content
                     a(href='/') Home
                 li.breadcrumb-item
                     a(href='/portfolio') Portfolio
+                li.breadcrumb-item
+                    a(href='/seminaritood') Seminaritööd
     h1 Seminaritööd page
     br
-    a.btn.btn-sm.btn-outline-secondary(href='#') Lõputööd
-    a.btn.btn-sm.btn-outline-secondary(href='/seminaritoo') Seminaritööd
-    a.btn.btn-sm.btn-outline-secondary(href='#') Praktikad
-    a.btn.btn-sm.btn-outline-secondary(href='#') Metall
-    a.btn.btn-sm.btn-outline-secondary(href='#') Puit
-    a.btn.btn-sm.btn-outline-secondary(href='#') Tekstiil
+    .text-center
+        .btn-group(role='group')
+            a.btn.btn-sm.btn-outline-secondary(href='/loputood') Lõputööd
+            a.btn.btn-sm.btn-outline-secondary(href='/seminaritood') Seminaritööd
+            a.btn.btn-sm.btn-outline-secondary(href='/praktikad') Praktikad
+    .text-center
+        .btn-group(role='group')        
+            a.btn.btn-sm.btn-outline-secondary(href='/metall') Metall
+            a.btn.btn-sm.btn-outline-secondary(href='/puit') Puit
+            a.btn.btn-sm.btn-outline-secondary(href='/tekstiil') Tekstiil
+    br
     #documents
         br
         .row

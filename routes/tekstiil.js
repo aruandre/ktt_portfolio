@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 let Document = require('../models/document');
 
-//---------- SEMINARITÖÖ ----------------
-//seminaritööd home route
+//---------- TEKSTIIL ----------------
+//tekstiil home route
 router.get('/', (req, res) => {
-    Document.find({ status: true, document_type: 'Seminaritöö' }, (err, documents) => {
+    Document.find({ status: true, tag: 'Tekstiil' }, (err, documents) => {
         if(err){
             console.log(err);
         } else {
-            res.render('seminaritood', {
+            res.render('tekstiil', {
                 documents: documents
             });
         }
