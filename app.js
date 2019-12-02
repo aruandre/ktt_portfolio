@@ -80,88 +80,9 @@ app.get('*', (req, res, next) => {
     next();
 });
 
-//---------- HOME ----------
-app.get('/', (req, res) => {
-    res.render('index');
-});
-
-//---------- PRAKTIKA ----------------
-let tekstiilRoute = require('./routes/tekstiil');
-app.use('/tekstiil', tekstiilRoute);
-
-//---------- PRAKTIKA ----------------
-let puitRoute = require('./routes/puit');
-app.use('/puit', puitRoute);
-
-//---------- PRAKTIKA ----------------
-let metallRoute = require('./routes/metall');
-app.use('/metall', metallRoute);
-
-//---------- PRAKTIKA ----------------
-let praktikadRoute = require('./routes/praktikad');
-app.use('/praktikad', praktikadRoute);
-
-//---------- SEMINARITÖÖ ----------------
-let loputoodRoute = require('./routes/loputood');
-app.use('/loputood', loputoodRoute);
-
-//---------- SEMINARITÖÖ ----------------
-let seminaritoodRoute = require('./routes/seminaritood');
-app.use('/seminaritood', seminaritoodRoute);
-
-//------------ FORGOT --------------
-let forgotRoute = require('./routes/forgot');
-app.use('/forgot', forgotRoute);
-
-//------------ RESET --------------
-let resetRoute = require('./routes/reset');
-app.use('/reset', resetRoute);
-
-//------------ LOGIN --------------
-let loginRoute = require('./routes/login');
-app.use('/login', loginRoute);
-
-//----------- LOGOUT ---------------
-let logoutRoute = require('./routes/logout');
-app.use('/logout', logoutRoute);
-
-//----------- ADMIN ---------------
-let adminRoute = require('./routes/admin');
-app.use('/admin', adminRoute);
-
-//---------- PROFILE -------------
-let profileRoute = require('./routes/profile');
-app.use('/profile', profileRoute);
-
-//---------- PORTFOLIO ----------------
-let portfolioRoute = require('./routes/portfolio');
-app.use('/portfolio', portfolioRoute);
-
-// ---------- STUDENTS ----------
-let studentsRoute = require('./routes/students');
-app.use('/students', studentsRoute);
-
-//------------ NEWS ----------------
-let newsRoute = require('./routes/news');
-app.use('/news', newsRoute);
-
-//------------ SERVICES ----------------
-let servicesRoute = require('./routes/services');
-app.use('/services', servicesRoute);
-
-//------------ ABOUT ---------------
-let aboutRoute = require('./routes/about');
-app.use('/about', aboutRoute);
-
-//------------ CONTACT ---------------
-let contactsRoute = require('./routes/contacts');
-app.use('/contacts', contactsRoute);
-
-//route to error page
-app.get('*', (req, res) => {
-    res.render('error');
-});
-
+//------------ MAIN ROUTE ---------------
+let mainRoute = require('./routes/main');
+app.use(mainRoute);
 
 //---------- START SERVER -------------
 https.createServer(options, app).listen(30000, () => {

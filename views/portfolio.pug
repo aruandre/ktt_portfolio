@@ -33,4 +33,17 @@ block content
                             p.list-group-item-text.author=document.author
                             .card
                                 a.btn.btn-sm.btn-outline-secondary(href='/portfolio/document/' + document._id) View
-
+    br
+    br
+    nav(aria-label='Page navigation example')
+        ul.pagination.justify-content-center
+            li.page-item.disabled
+                a.page-link(href='#' tabindex='-1') Previous
+            li.page-item
+                a.page-link(href='#') 1
+            li.page-item
+                a.page-link(href='#') 2
+            li.page-item
+                a.page-link(href='#') 3
+            li.page-item
+                a.page-link(href='#') Next
