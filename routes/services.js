@@ -20,30 +20,35 @@ router.get('/', (req, res) => {
 
 // load edit form
 router.get('/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    Services.findById(req.params.id, (err, service) => {
-        res.render('edit_services', {
-            service: service
+    try{
+        Services.findById(req.params.id, (err, service) => {
+            res.render('edit_services', {
+                service: service
+            });
         });
-    });
+    } catch(err){
+        console.log(err);
+        res.render('error');
+    }
 });
 
 //update services route
 router.post('/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    let services = {};
-    services.title = req.body.title;
-    services.description = req.body.description;
-    
-    let query = {_id:req.params.id}
-    
-    Services.updateOne(query, services, (err) => {
-        if(err){
-            console.log(err);
-            return;
-        } else {
+    try{
+        let services = {};
+        services.title = req.body.title;
+        services.description = req.body.description;
+        
+        let query = {_id:req.params.id}
+        
+        Services.updateOne(query, services, (err) => {
             req.flash('success', 'Service updated');
             res.redirect('/services');
-        }
-    });
+        });
+    } catch(err){
+        console.log(err);
+        res.render('error');
+    }
 });
 
 //delete services route

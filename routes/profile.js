@@ -16,31 +16,36 @@ router.get('/', helper.ensureAuthenticated, (req, res) => {
     });
 });
 
-//edit profile route
+//load edit form
 router.get('/edit/:id', helper.ensureAuthenticated, (req, res) => {
-    Students.findById(req.params.id, (err, students) => {
-        res.render('edit_profile', {
-            students: students
+    try{
+        Students.findById(req.params.id, (err, students) => {
+            res.render('edit_profile', {
+                students: students
+            });
         });
-    });
+    } catch(err){
+        console.log(err);
+        res.render('error');
+    }
 });
 
-//update submit POST route
+//update profile POST route
 router.post('/edit/:id', helper.ensureAuthenticated, (req, res) => {
-    let student = {};
-    student.email = req.body.email;
-    student.personalPortfolio = req.body.personalPortfolio;
-    
-    let query = {_id:req.params.id}
-    Students.updateOne(query, student, (err) => {
-        if(err){
-            console.log(err);
-            return;
-        } else {
+    try{
+        let student = {};
+        student.email = req.body.email;
+        student.personalPortfolio = req.body.personalPortfolio;
+        
+        let query = {_id:req.params.id}
+        Students.updateOne(query, student, (err) => {
             req.flash('success', 'Profile updated');
             res.redirect('/profile');
-        }
-    });
+        });
+    } catch(err){
+        console.log(err);
+        res.render('error');
+    }
 });
 
 module.exports = router;

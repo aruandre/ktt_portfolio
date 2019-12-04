@@ -43,22 +43,22 @@ router.delete('/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res
 
 //update news route
 router.post('/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    let news = {};
-    news.title = req.body.title;
-    news.date = req.body.date;
-    news.description = req.body.description;
-    
-    let query = {_id:req.params.id}
-
-    News.updateOne(query, news, (err) => {
-        if(err){
-            console.log(err);
-            return;
-        } else {
+    try{
+        let news = {};
+        news.title = req.body.title;
+        news.date = req.body.date;
+        news.description = req.body.description;
+        
+        let query = {_id:req.params.id}
+        
+        News.updateOne(query, news, (err) => {
             req.flash('success', 'Document updated');
             res.redirect('/news');
-        }
-    });
+        });
+    } catch(err){
+        console.log(err);
+        res.render('error');
+    }
 });
 
 module.exports = router;

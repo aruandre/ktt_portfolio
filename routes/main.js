@@ -79,7 +79,7 @@ router.use('/contacts', contactsRoute);
 
 //route to error page
 router.get('*', (req, res) => {
-    res.render('error');
+    res.render('404');
 });
 
 module.exports = router;
