@@ -18,6 +18,25 @@ router.get('/', (req, res) => {
     }
 });
 
+function getPortfolioPages(pageNr, startIndex){
+    router.get('/' + pageNr + '', (req, res) => {
+        try {
+            Document.find({ status: true }, (err, documents) => {
+                res.render('portfolio', {
+                    documents: documents
+                });    
+            }).limit(3).skip(startIndex);
+        } catch(err){
+            console.log(err);
+            res.render('error');
+        }
+    });
+}
+
+getPortfolioPages(1,0)
+getPortfolioPages(2,2)
+getPortfolioPages(3,5)
+
 //get single document
 router.get('/document/:id', (req, res) => {
     Document.findById(req.params.id, (err, document) => {
