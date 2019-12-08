@@ -2,14 +2,14 @@ extends layout
 
 block content
     nav(aria-label='breadcrumb')
-            ol.breadcrumb
-                li.breadcrumb-item
-                    a(href='/') Home
-                li.breadcrumb-item
-                    a(href='/profile') Profile
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/profile') Profile
     h1 Profile page
-
     br
+    != messages('message', locals)
     p Username: #{user.username}
     p Password: #{user.password} 
     p Email: #{user.email}

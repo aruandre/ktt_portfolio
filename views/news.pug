@@ -2,17 +2,18 @@ extends layout
 
 block content
     nav(aria-label='breadcrumb')
-            ol.breadcrumb
-                li.breadcrumb-item
-                    a(href='/') Home
-                li.breadcrumb-item
-                    a(href='/news') News
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/news') News
     h1 News page
+    != messages('message', locals)
     br
     .row
     each singleNew, i in news
         //-.card.card-body
-        .col-md-4
+        .col
             h4.title=singleNew.title
             p Event info: #{singleNew.description}
             p When: #{singleNew.date} #{singleNew.time}

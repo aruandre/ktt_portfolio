@@ -2,14 +2,15 @@ extends layout
 
 block content
     nav(aria-label='breadcrumb')
-            ol.breadcrumb
-                li.breadcrumb-item
-                    a(href='/') Home
-                li.breadcrumb-item
-                    a(href='/news') News
-                li.breadcrumb-item
-                    a(href='/news/edit' + singleNew._id) Edit
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/news') News
+            li.breadcrumb-item
+                a(href='/news/edit' + singleNew._id) Edit
     br
+    != messages('message', locals)
     form(method='POST', action='/news/edit/' + singleNew._id)
         #form-group
             label News title:

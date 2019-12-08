@@ -2,15 +2,16 @@ extends layout
 
 block content
     nav(aria-label='breadcrumb')
-            ol.breadcrumb
-                li.breadcrumb-item
-                    a(href='/') Home
-                li.breadcrumb-item
-                    a(href='/admin') Admin
-                li.breadcrumb-item
-                    a(href='/admin/unpublished') Unpublished
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/admin') Admin
+            li.breadcrumb-item
+                a(href='/admin/unpublished') Unpublished
     h1 Unpublished docs
     br
+    != messages('message', locals)
     .row
     each document, i in documents
         .card.card-body

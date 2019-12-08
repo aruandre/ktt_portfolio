@@ -2,13 +2,14 @@ extends layout
 
 block content
     nav(aria-label='breadcrumb')
-            ol.breadcrumb
-                li.breadcrumb-item
-                    a(href='/') Home
-                li.breadcrumb-item
-                    a(href='/students') Students
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/students') Students
     h1 Students page
     br
+    != messages('message', locals)
     //- TODO sort by year
     #students
         each student, i in students

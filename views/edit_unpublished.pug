@@ -12,6 +12,7 @@ block content
             li.breadcrumb-item
                 a(href='#') Edit
     br
+    != messages('message', locals)
     form(method='POST', action='/admin/unpublished/edit/' + document._id)
         //- enctype='multipart/form-data' adding this will break updating docs
         #form-group

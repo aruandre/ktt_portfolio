@@ -2,16 +2,16 @@ extends layout
 
 block content
     nav(aria-label='breadcrumb')
-            ol.breadcrumb
-                li.breadcrumb-item
-                    a(href='/') Home
-                li.breadcrumb-item
-                    a(href='/Students') Students
-                li.breadcrumb-item
-                    a(href='/Edit') Edit
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/Students') Students
+            li.breadcrumb-item
+                a(href='/Edit') Edit
     h1 Student info edit page
-
     br
+    != messages('message', locals)
     p Username: #{student.username}
     p Password: #{student.password} 
     p Email: #{student.email}

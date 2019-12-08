@@ -2,14 +2,15 @@ extends layout
 
 block content
     nav(aria-label='breadcrumb')
-                ol.breadcrumb
-                    li.breadcrumb-item
-                        a(href='/') Home
-                    li.breadcrumb-item
-                        a(href='/services') Services
-                    li.breadcrumb-item
-                        a(href='/services/edit' + service._id) Edit
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/services') Services
+            li.breadcrumb-item
+                a(href='/services/edit' + service._id) Edit
     br
+    != messages('message', locals)
     form(method='POST', action='/services/edit/' + service._id)
         #form-group
             label Service title:
