@@ -46,4 +46,11 @@ block content
             li.page-item
                 a.page-link(href='/portfolio/3') 3
             li.page-item
-                a.page-link(href='#') Next
+                a.page-link#test(href='#') Next
+                //- script.
+                //-     document.getElementById('test').addEventListener('click', function test(){
+                //-         var url = document.URL;
+                //-         var pagenumber = url.substr(url.length-1);
+                //-         console.log(window.location + pagenumber++);
+                //-     });
+                    

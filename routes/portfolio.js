@@ -18,8 +18,8 @@ router.get('/', (req, res) => {
     }
 });
 
-function getPortfolioPages(pageNr, startIndex){
-    router.get('/' + pageNr + '', (req, res) => {
+async function getPortfolioPages(pageNr, startIndex){
+    router.get('/' + pageNr, (req, res) => {
         try {
             Document.find({ status: true }, (err, documents) => {
                 res.render('portfolio', {
@@ -36,6 +36,7 @@ function getPortfolioPages(pageNr, startIndex){
 getPortfolioPages(1,0)
 getPortfolioPages(2,2)
 getPortfolioPages(3,5)
+//pageNr++
 
 //get single document
 router.get('/document/:id', (req, res) => {
