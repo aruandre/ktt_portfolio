@@ -5,29 +5,39 @@ router.get('/', (req, res) => {
     res.render('index');
 });
 
-//---------- PRAKTIKA ----------------
+// function newCourseRoute(courseNr){
+//     let courseRoute = require('./ktd17');
+//     router.use('/ktd17', courseRoute);
+// }
+
+// newCourseRoute(17);
+
+let ktd17Route = require('./ktd17');
+router.use('/students/ktd17', ktd17Route);
+
+//---------- TEKSTIIL ----------------
 let tekstiilRoute = require('./tekstiil');
-router.use('/tekstiil', tekstiilRoute);
+router.use('/portfolio/tekstiil', tekstiilRoute);
 
-//---------- PRAKTIKA ----------------
+//---------- PUIT ----------------
 let puitRoute = require('./puit');
-router.use('/puit', puitRoute);
+router.use('/portfolio/puit', puitRoute);
 
-//---------- PRAKTIKA ----------------
+//---------- METALL ----------------
 let metallRoute = require('./metall');
-router.use('/metall', metallRoute);
+router.use('/portfolio/metall', metallRoute);
 
 //---------- PRAKTIKA ----------------
 let praktikadRoute = require('./praktikad');
-router.use('/praktikad', praktikadRoute);
+router.use('/portfolio/praktikad', praktikadRoute);
 
-//---------- SEMINARITÖÖ ----------------
+//---------- LÕPUTÖÖ ----------------
 let loputoodRoute = require('./loputood');
-router.use('/loputood', loputoodRoute);
+router.use('/portfolio/loputood', loputoodRoute);
 
 //---------- SEMINARITÖÖ ----------------
 let seminaritoodRoute = require('./seminaritood');
-router.use('/seminaritood', seminaritoodRoute);
+router.use('/portfolio/seminaritood', seminaritoodRoute);
 
 //------------ FORGOT --------------
 let forgotRoute = require('./forgot');
