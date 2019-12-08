@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
                 news: news
             });
         }
-    }).sort('-date');
+    }).sort('-date').limit(10);
 });
 
 // load edit form
@@ -47,6 +47,7 @@ router.post('/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (req, res) 
         let news = {};
         news.title = req.body.title;
         news.date = req.body.date;
+        news.time = req.body.time;
         news.description = req.body.description;
         
         let query = {_id:req.params.id}

@@ -18,8 +18,11 @@ block content
             label Date:
             input.form-control(name='date', type='date', value=singleNew.date)
         #form-group
+            label Time:
+            input.form-control(name='time', type='time', value=singleNew.time)
+        #form-group
             label Description:
-            textarea.form-control(name='description', type='text', value=singleNew.description)
+            input.textarea.form-control(name='description', type='text', value=singleNew.description)
             br
         #form-group
             input.btn.btn-success(type='submit', value='Submit')

@@ -50,6 +50,7 @@ router.post('/addNews', helper.ensureAuthenticated, helper.isAdmin, (req, res) =
     new News({
         title: req.body.title,
         date: req.body.date,
+        time: req.body.time,
         description: req.body.description
     }).save((err, news) => {
         console.log(req);

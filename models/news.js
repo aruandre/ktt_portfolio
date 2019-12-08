@@ -1,5 +1,6 @@
 let mongoose = require('mongoose');
 let moment = require('moment');
+require('moment/locale/et');
 
 //news schema
 let newsSchema = mongoose.Schema({
@@ -9,7 +10,11 @@ let newsSchema = mongoose.Schema({
     },
     date:{
         type: String,
-        default: () => moment().format('dd.MM.YYYY')
+        default: () => moment().locale('et').format("dd.MM.YYYY")
+    },
+    time:{
+        type: String,
+        default: () => moment().locale('et').format("hh:mm")
     },
     description:{
         type: String

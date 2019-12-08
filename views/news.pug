@@ -14,8 +14,8 @@ block content
         //-.card.card-body
         .col-md-4
             h4.title=singleNew.title
-            p.description=singleNew.description
-            p.date=singleNew.date
+            p Event info: #{singleNew.description}
+            p When: #{singleNew.date} #{singleNew.time}
         if user
             a.btn.btn-primary(href='/news/edit/'+ singleNew._id) Edit
             a.btn.btn-danger.delete-news(href='#', data-id=singleNew._id) Delete
