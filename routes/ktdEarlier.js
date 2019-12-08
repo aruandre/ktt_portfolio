@@ -5,11 +5,11 @@ let Students = require('../models/students');
 // ---------- STUDENTS ----------
 //students home route
 router.get('/', (req, res) => {
-    Students.find({ role: 'basic', course: 17 }, (err, students) => {
+    Students.find({ role: 'basic', course: {'$nin': [17, 18, 19]} }, (err, students) => {
         if(err){
             console.log(err);
         } else {
-            res.render('ktd17', {
+            res.render('ktd_earlier', {
                 students: students
             });
         }

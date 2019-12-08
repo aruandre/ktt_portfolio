@@ -15,6 +15,15 @@ router.get('/', (req, res) => {
 let ktd17Route = require('./ktd17');
 router.use('/students/ktd17', ktd17Route);
 
+let ktd18Route = require('./ktd18');
+router.use('/students/ktd18', ktd18Route);
+
+let ktd19Route = require('./ktd19');
+router.use('/students/ktd19', ktd19Route);
+
+let ktdEarlierRoute = require('./ktdEarlier');
+router.use('/students/ktd_earlier', ktdEarlierRoute);
+
 //---------- TEKSTIIL ----------------
 let tekstiilRoute = require('./tekstiil');
 router.use('/portfolio/tekstiil', tekstiilRoute);
