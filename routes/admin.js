@@ -26,11 +26,11 @@ router.post('/addDocument', helper.ensureAuthenticated, (req, res, next) => {
                     document_type: req.body.document_type,
                     title: req.body.title,
                     author: req.body.author.split(","),
-                    created_at: req.body.created_at,
+                    documentCreated_at: req.body.documentCreated_at,
                     description: req.body.description,
                     tag: req.body.tag,
-                    //path: req.file.path.replace(/\\/g, "/").substring('public'.length),
-                    path: req.files.path,
+                    path: req.file.path.replace(/\\/g, "/").substring('public'.length),
+                    //path: req.files.path,
                     status: req.body.status
                 }).save((err, doc) => {
                     req.flash('success', 'Document added');
@@ -111,7 +111,7 @@ router.post('/unpublished/edit/:id', helper.ensureAuthenticated, helper.isAdmin,
         document.document_type = req.body.document_type;
         document.title = req.body.title;
         document.author = req.body.author.split(",");
-        document.created_at = req.body.created_at;
+        document.documentCreated_at = req.body.documentCreated_at;
         document.description = req.body.description;
         document.tag = req.body.tag;
         //- document.path = req.file.path;

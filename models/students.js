@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const StudentsSchema = mongoose.Schema({
+const studentsSchema = mongoose.Schema({
     username:{
         type: String,
         unique: true,
@@ -40,4 +40,5 @@ const StudentsSchema = mongoose.Schema({
     }
 });
 
-const Students = module.exports = mongoose.model('Students', StudentsSchema);
+studentsSchema.set('timestamps', true);
+const Students = module.exports = mongoose.model('Students', studentsSchema);

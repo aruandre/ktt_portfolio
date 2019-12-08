@@ -21,4 +21,5 @@ let newsSchema = mongoose.Schema({
     }
 });
 
+newsSchema.set('timestamps', true);
 let News = module.exports = mongoose.model('News', newsSchema);

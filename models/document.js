@@ -1,22 +1,25 @@
 let mongoose = require('mongoose');
+let moment = require('moment');
+require('moment/locale/et');
 
 //document schema
 let documentSchema = mongoose.Schema({
     document_type:{
         type: String,
-        //required: true
+        required: true
     },
     title:{
         type: String,
-        //required: true
+        required: true
     },
     author:[{
         type: String,
-        trim: true
-        //required: true
+        trim: true,
+        required: true
     }],
-    created_at:{
-        type: Date
+    documentCreated_at:{
+        type: String,
+        default: () => moment().locale('et').format("dd.MM.YYYY")
     },
     description:{
         type: String
@@ -39,4 +42,5 @@ let documentSchema = mongoose.Schema({
     }
 });
 
+documentSchema.set('timestamps', true);
 let Document = module.exports = mongoose.model('Document', documentSchema);

@@ -74,7 +74,7 @@ router.post('/document/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (r
                 document.document_type = req.body.document_type;
                 document.title = req.body.title;
                 document.author = req.body.author.split(",");
-                document.created_at = req.body.created_at;
+                document.documentCreated_at = req.body.documentCreated_at;
                 document.description = req.body.description;
                 document.tag = req.body.tag;
                 //console.log(req.files.path);
