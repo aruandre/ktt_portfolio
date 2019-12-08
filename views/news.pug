@@ -11,12 +11,13 @@ block content
     br
     .row
     each singleNew, i in news
-        .card.card-body
-            .col-md-4
-                p.title=singleNew.title
-                p.date=singleNew.date
-                p.description=singleNew.description
+        //-.card.card-body
+        .col-md-4
+            h4.title=singleNew.title
+            p.description=singleNew.description
+            p.date=singleNew.date
         if user
             a.btn.btn-primary(href='/news/edit/'+ singleNew._id) Edit
             a.btn.btn-danger.delete-news(href='#', data-id=singleNew._id) Delete
+        hr
         br

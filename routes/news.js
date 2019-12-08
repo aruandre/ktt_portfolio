@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
                 news: news
             });
         }
-    });
+    }).sort('-date');
 });
 
 // load edit form

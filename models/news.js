@@ -1,13 +1,15 @@
 let mongoose = require('mongoose');
+let moment = require('moment');
 
 //news schema
 let newsSchema = mongoose.Schema({
     title:{
         type: String,
-        //required: true
+        required: true
     },
     date:{
-        type: Date
+        type: String,
+        default: () => moment().format('dd.MM.YYYY')
     },
     description:{
         type: String
