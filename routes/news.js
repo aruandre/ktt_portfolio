@@ -5,8 +5,8 @@ let News = require('../models/news');
 
 //----------- NEWS -----------
 //news route
-router.get('/', (req, res) => {
-    News.find({}, (err, news) => {
+router.get('/', async (req, res) => {
+    await News.find({}, (err, news) => {
         if(err){
             console.log(err);
         } else {

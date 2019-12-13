@@ -4,8 +4,8 @@ const helper = require('../helper/helper');
 let Students = require('../models/students');
 
 //profile route
-router.get('/', helper.ensureAuthenticated, (req, res) => {
-    Students.find({}, (err, students) => {
+router.get('/', helper.ensureAuthenticated, async (req, res) => {
+    await Students.find({}, (err, students) => {
         if(err){
             console.log(err);
         } else {

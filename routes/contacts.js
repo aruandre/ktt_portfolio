@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 //------------ CONTACTS ---------------
-router.get('/', (req, res) => {
-    res.render('contacts');
+router.get('/', async (req, res) => {
+    await res.render('contacts');
 });
 
 module.exports = router;

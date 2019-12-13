@@ -4,8 +4,8 @@ let Document = require('../models/document');
 
 //---------- PUIT ----------------
 //puit home route
-router.get('/', (req, res) => {
-    Document.find({ status: true, tag: 'Puit' }, (err, documents) => {
+router.get('/', async (req, res) => {
+    await Document.find({ status: true, tag: 'Puit' }, (err, documents) => {
         if(err){
             console.log(err);
         } else {

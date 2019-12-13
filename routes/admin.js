@@ -8,8 +8,8 @@ let Services = require('../models/services');
 let Students = require('../models/students');
 
 //----------- ADMIN ---------------
-router.get('/', helper.ensureAuthenticated, (req, res) => {
-    res.render('admin', {
+router.get('/', helper.ensureAuthenticated, async (req, res) => {
+    await res.render('admin', {
     });
 });
 

@@ -4,8 +4,8 @@ let Document = require('../models/document');
 
 //---------- TEKSTIIL ----------------
 //tekstiil home route
-router.get('/', (req, res) => {
-    Document.find({ status: true, tag: 'Tekstiil' }, (err, documents) => {
+router.get('/', async (req, res) => {
+    await Document.find({ status: true, tag: 'Tekstiil' }, (err, documents) => {
         if(err){
             console.log(err);
         } else {

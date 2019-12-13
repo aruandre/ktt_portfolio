@@ -5,8 +5,8 @@ let Students = require('../models/students');
 
 // ---------- STUDENTS ----------
 //students home route
-router.get('/', (req, res) => {
-    Students.find({ role: 'basic' }, (err, students) => {
+router.get('/', async (req, res) => {
+    await Students.find({ role: 'basic' }, (err, students) => {
         if(err){
             console.log(err);
         } else {

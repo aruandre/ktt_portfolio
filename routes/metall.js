@@ -4,8 +4,8 @@ let Document = require('../models/document');
 
 //---------- METALL ----------------
 //metall home route
-router.get('/', (req, res) => {
-    Document.find({ status: true, tag: 'Metall' }, (err, documents) => {
+router.get('/', async (req, res) => {
+    await Document.find({ status: true, tag: 'Metall' }, (err, documents) => {
         if(err){
             console.log(err);
         } else {

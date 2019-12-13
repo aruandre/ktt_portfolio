@@ -5,8 +5,8 @@ let Services = require('../models/services');
 
 //------------ SERVICES ------------
 //get services route
-router.get('/', (req, res) => {
-    Services.find({}, (err, services) => {
+router.get('/', async (req, res) => {
+    await Services.find({}, (err, services) => {
         if(err){
             console.log(err);
         } else {
