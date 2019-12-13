@@ -36,6 +36,8 @@ async function getPortfolioPages(pageNr, startIndex){
 getPortfolioPages(1,0)
 getPortfolioPages(2,2)
 getPortfolioPages(3,5)
+//perPage = collection.items.length / 3 
+//for c in colLen
 //pageNr++
 
 //get single document
@@ -77,11 +79,14 @@ router.post('/document/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (r
                 document.documentCreated_at = req.body.documentCreated_at;
                 document.description = req.body.description;
                 document.tag = req.body.tag;
-                //console.log(req.files.path);
-                document.path = req.files.path;
+                //document.path = req.files;
                 document.status = req.body.status;
+                
+                console.log(req.files);
+                //console.log(req.body);
+                
                 let query = {_id:req.params.id}
-                Document.updateOne(query, document, (err) => {
+                Document.updateOne(query, document, req.files, (err) => {
                     req.flash('success', 'Document updated');
                     res.redirect('/portfolio');
                 });

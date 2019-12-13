@@ -13,7 +13,7 @@ block content
                 a(href='#') Edit
     br
     != messages('message', locals)
-    form(method='POST', action='/portfolio/document/edit/' + document._id)
+    form(method='POST', action='/portfolio/document/edit/' + document._id, enctype='multipart/form-data')
         //- enctype='multipart/form-data' adding this will break updating docs
         #form-group
            .input-group.mb-3
@@ -51,7 +51,7 @@ block content
             label.form-check-label(for='defaultCheck3') Publish&nbsp;
             input#defaultCheck3.form-control-input(name='status' type='checkbox' value='true')
         #form-group
-            input(type='file', name='fileupload')
+            input(type='file', name='fileupload' multiple accept='image/*')
             br
             br
             input.btn.btn-success(type='submit', value='Submit')

@@ -25,7 +25,7 @@ const upload = multer({
         }
         cb(null, true)
     }
-}).single('fileupload');
+}).array('fileupload', 2);
 
 //------------- ENSURE AUTH -----------------
 function ensureAuthenticated(req, res, next){

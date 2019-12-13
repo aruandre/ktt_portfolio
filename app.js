@@ -8,15 +8,20 @@ const session = require('express-session');
 const passport = require('passport');
 const config = require('./config/database');
 const fs = require('fs');
-const https = require('https');
+const spdy = require('spdy');
 const morgan = require('morgan');
+
 
 //SSL certs
 let key = fs.readFileSync(__dirname + '/certs/cert.key');
 let cert = fs.readFileSync(__dirname + '/certs/cert.crt');
 let options = {
     key: key,
-    cert: cert
+    cert: cert,
+    spdy: {
+        protocols: [ 'h2', 'spdy/3.1', 'http/1.1' ],
+        plain: false
+    }
 };
 
 //db connection
@@ -85,6 +90,6 @@ let mainRoute = require('./routes/main');
 app.use(mainRoute);
 
 //---------- START SERVER -------------
-https.createServer(options, app).listen(30000, () => {
+spdy.createServer(options, app).listen(30000, () => {
     console.log('Server listening on port 30000');
 });
