@@ -5,9 +5,9 @@ let Document = require('../models/document');
 
 //---------- PORTFOLIO ----------------
 //portfolio home route
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     try {
-        Document.find({ status: true }, (err, documents) => {
+        await Document.find({ status: true }, (err, documents) => {
             res.render('portfolio', {
                 documents: documents
             });    
