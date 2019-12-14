@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
                 students: students
             });
         }
-    });
+    }).lean();
 });
 
 module.exports = router;

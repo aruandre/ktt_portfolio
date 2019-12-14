@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
                 news: news
             });
         }
-    }).sort('-date').limit(10);
+    }).lean().sort('-date').limit(10);
 });
 
 // load edit form

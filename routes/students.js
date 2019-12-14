@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
                 students: students
             });
         }
-    });
+    }).lean();
 });
 
 // load edit form

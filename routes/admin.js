@@ -92,7 +92,7 @@ router.get('/unpublished', helper.ensureAuthenticated, helper.isAdmin, (req, res
                 documents: documents
             });
         }
-    });
+    }).lean();
 });
 
 //load edit form

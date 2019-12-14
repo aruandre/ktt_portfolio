@@ -3,6 +3,7 @@ const router = express.Router();
 const helper = require('../helper/helper');
 let Document = require('../models/document');
 
+
 //---------- PORTFOLIO ----------------
 //portfolio home route
 router.get('/', async (req, res) => {
@@ -66,7 +67,7 @@ router.get('/document/edit/:id', helper.ensureAuthenticated, helper.isAdmin, (re
 //update submit POST route
 router.post('/document/edit/:id', helper.ensureAuthenticated, helper.isAdmin, async (req, res) => {
     try{
-        helper.upload(req, res, async (err) => {
+        await helper.upload(req, res, async (err) => {
             if(err){
                 console.log(err);
                 req.flash('danger', 'File upload failed!');
