@@ -1,14 +1,7 @@
 doctype html
 html
     head
-        //- Global site tag (gtag.js) - Google Analytics
-        script(async='' src='https://www.googletagmanager.com/gtag/js?id=UA-154580362-1')
-        script.
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'UA-154580362-1');
-
+        script(src='../config/ga.js')
     title KTD | Portfolio
     link(rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.css')
 body
