@@ -1,18 +1,16 @@
 const express = require('express');
 const path = require('path');
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 //const { check, validationResult } = require('express-validator');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
-const config = require('./config/database');
 const fs = require('fs');
-const spdy = require('spdy');
 const morgan = require('morgan');
+const helperDb = require('./helper/db');
+const spdy = require('spdy');
 
-
-//SSL certs
+//SSL & http/2
 let key = fs.readFileSync(__dirname + '/certs/cert.key');
 let cert = fs.readFileSync(__dirname + '/certs/cert.crt');
 let options = {
@@ -25,18 +23,7 @@ let options = {
 };
 
 //db connection
-mongoose.connect(config.database, { useNewUrlParser: true, useUnifiedTopology: true });
-let db = mongoose.connection;
-
-//check connection
-db.once('open', () => {
-    console.log('Connected to MongoDB');
-});
-
-//check for db errors
-db.on('error', (err) => {
-    console.log(err);
-});
+helperDb.dbConn();
 
 //init app
 const app = express();

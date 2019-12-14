@@ -2,6 +2,7 @@ extends layout
 
 block content
     br
+    != messages('message', locals)
     h1.jumbotron-heading KTD Portfolio prototype
         p.lead.text-muted| Something short and leading about the collection below&mdash;its contents, the creator, etc. Make it short and sweet, but not too short so folks don&rsquo;t simply skip over it entirely.
         a.btn.btn-info.my-2(href='/services') See our services

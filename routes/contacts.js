@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
     res.render('contacts');
 });
 
-//------- FORGOT POST --------
+//------- SEND MESSAGE post --------
 router.post('/sendMessage', (req, res) => {
     try{
         let smtpTransport = nodemailer.createTransport({
@@ -27,9 +27,9 @@ router.post('/sendMessage', (req, res) => {
             to: '',
             from: 'sendMessageForm@ktdportfolio.hk.tlu.ee',
             subject: 'New message from KTD portfolio message form',
-            text: `${req.body.name} (${req.body.email}) says: ${req.body.message}`};
+            text: `Name: ${req.body.name}\nEmail: ${req.body.email}\nMessage: ${req.body.message}`};
 
-            smtpTransport.sendMail(mailOptions, async (err) => {
+            smtpTransport.sendMail(mailOptions, (err) => {
                 req.flash('info', 'Your message has been sent!');
                 res.redirect('/');
             });

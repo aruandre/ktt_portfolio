@@ -9,8 +9,9 @@ block content
                 a(href='/contacts') Contacts
     h1 Contacts page
     br
+    != messages('message', locals)
     .row
-        .col-4
+        .col-5
             br
             br
             h4 Send us a message
@@ -26,7 +27,7 @@ block content
                     textarea.form-control(name='message')
                     br
                 input.btn.btn-success(type='submit', value='Submit')
-        .col-4
+        .col-3
             br
             br
             p Tallinn University Haapsalu College
