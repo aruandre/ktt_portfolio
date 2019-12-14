@@ -12,9 +12,9 @@ router.get('/', async (req, res) => {
         } else {
             res.render('services', {
                 services: services
-            }).lean();
+            });
         }
-    });
+    }).lean();
 });
 
 // load edit form

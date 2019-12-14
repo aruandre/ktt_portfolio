@@ -8,8 +8,8 @@ let Services = require('../models/services');
 let Students = require('../models/students');
 
 //----------- ADMIN ---------------
-router.get('/', helper.ensureAuthenticated, async (req, res) => {
-    await res.render('admin', {
+router.get('/', helper.ensureAuthenticated, (req, res) => {
+    res.render('admin', {
     });
 });
 
@@ -29,10 +29,11 @@ router.post('/addDocument', helper.ensureAuthenticated, (req, res, next) => {
                     documentCreated_at: req.body.documentCreated_at,
                     description: req.body.description,
                     tag: req.body.tag,
-                    path: req.file.path.replace(/\\/g, "/").substring('public'.length),
-                    //path: req.files.path,
+                    //path: req.file.path.replace(/\\/g, "/").substring('public'.length),
+                    path: req.files.path,
                     status: req.body.status
                 }).save((err, doc) => {
+                    console.log(req);
                     req.flash('success', 'Document added');
                     res.redirect('/admin');
                 });

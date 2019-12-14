@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
             res.render('portfolio', {
                 documents: documents
             });    
-        });
+        }).lean();
     } catch(err){
         console.log(err);
         res.render('error');
@@ -80,14 +80,13 @@ router.post('/document/edit/:id', helper.ensureAuthenticated, helper.isAdmin, as
                 document.documentCreated_at = req.body.documentCreated_at;
                 document.description = req.body.description;
                 document.tag = req.body.tag;
-                //document.path = req.files;
+                document.path = req.files;
                 document.status = req.body.status;
                 
                 console.log(req.files);
-                //console.log(req.body);
                 
                 let query = {_id:req.params.id}
-                await Document.updateOne(query, document, req.files, (err) => {
+                await Document.updateOne(query, document, (err) => {
                     req.flash('success', 'Document updated');
                     res.redirect('/portfolio');
                 });
