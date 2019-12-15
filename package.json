@@ -21,6 +21,7 @@
     "fs": "0.0.1-security",
     "googleapis": "^45.0.0",
     "gridfs-stream": "^1.1.1",
+    "helmet": "^3.21.2",
     "moment": "^2.24.0",
     "mongoose": "^5.7.5",
     "mongoose-date-format": "^1.2.0",

@@ -9,6 +9,7 @@ const fs = require('fs');
 const morgan = require('morgan');
 const helperDb = require('./helper/db');
 const spdy = require('spdy');
+const helmet = require('helmet')
 
 //SSL & http/2
 let key = fs.readFileSync(__dirname + '/certs/cert.key');
@@ -28,11 +29,19 @@ helperDb.dbConn();
 //init app
 const app = express();
 
+//setup helmet
+app.use(helmet({
+    //contentSecurityPolicy: true,
+    crossdomain: true,
+    //featurepolicy
+    referrerPolicy: true
+}));
+
 //logger
 let logDir = path.join(__dirname, 'log');
 fs.existsSync(logDir) || fs.mkdirSync(logDir);
 let accessLogStream = fs.createWriteStream(logDir + '/accesslog' + '-' + new Date().toJSON().slice(0,10) + '-' + Date.now() + '.log',{ path: logDir });
-// setup the logger 
+//setup the logger 
 app.use(morgan('combined', {stream : accessLogStream }));
 
 //load view engine
