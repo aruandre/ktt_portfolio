@@ -11,6 +11,8 @@ const helperDb = require('./helper/db');
 const spdy = require('spdy');
 const helmet = require('helmet')
 
+require('dotenv').config();
+
 //SSL & http/2
 let key = fs.readFileSync(__dirname + '/certs/cert.key');
 let cert = fs.readFileSync(__dirname + '/certs/cert.crt');
@@ -60,7 +62,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: 'keyboard cat',
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true, // minimize risk of XSS attacks by restricting the client from reading the cookie
+        secure: true, // only send cookie over https
+        maxAge: 60000 * 60 * 24 // set cookie expiry length in ms
+    }
 }));
 
 //express messages middleware

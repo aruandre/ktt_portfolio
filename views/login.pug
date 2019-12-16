@@ -2,6 +2,7 @@ extends layout
 
 block content
     h1 Login
+    != messages('message', locals)
     form(method='POST', action='/login')
         #form-group
             label Username:
