@@ -19,6 +19,7 @@
     "express-messages": "^1.0.1",
     "express-rate-limit": "^5.0.0",
     "express-session": "^1.16.2",
+    "express-validator": "^6.3.0",
     "fs": "0.0.1-security",
     "googleapis": "^45.0.0",
     "gridfs-stream": "^1.1.1",

@@ -6,6 +6,7 @@ let News = require('../models/news');
 let Document = require('../models/document');
 let Services = require('../models/services');
 let Students = require('../models/students');
+const { check, validationResult } = require('express-validator');
 
 //----------- ADMIN ---------------
 router.get('/', helper.ensureAuthenticated, (req, res) => {
@@ -47,22 +48,27 @@ router.post('/addDocument', helper.ensureAuthenticated, (req, res, next) => {
 });
 
 //admin add news route
-router.post('/addNews', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    new News({
-        title: req.body.title,
-        date: req.body.date,
-        time: req.body.time,
-        description: req.body.description
-    }).save((err, news) => {
-        console.log(req);
-        if(err){
-            req.flash('danger', 'Data save failed!');
-            return;
-        } else {
-            req.flash('success', 'News added');
+router.post('/addNews', helper.ensureAuthenticated, helper.isAdmin, [
+    check('title').notEmpty()
+    ], (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        req.flash('danger', 'Title can not be empty!');
+        res.render('admin');
+        return;
+    } else {
+        new News({
+            title: req.body.title,
+            date: req.body.date,
+            time: req.body.time,
+            description: req.body.description
+        }).save((err, news) => {
+            console.log(req);
+            req.flash('success', 'News added!');
             res.redirect('/admin');
-        }
-    });
+        });
+    }
 });
 
 //admin add services route
