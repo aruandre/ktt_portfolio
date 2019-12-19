@@ -65,28 +65,33 @@ router.post('/addNews', helper.ensureAuthenticated, helper.isAdmin, [
             description: req.body.description
         }).save((err, news) => {
             console.log(req);
-            req.flash('success', 'News added!');
+            req.flash('success', 'News added');
             res.redirect('/admin');
         });
     }
 });
 
 //admin add services route
-router.post('/addService', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    new Services({
-        title: req.body.title,
-        date: req.body.date,
-        description: req.body.description
-    }).save((err, news) => {
-        console.log(req);
-        if(err){
-            req.flash('danger', 'Service save failed!');
-            return;
-        } else {
+router.post('/addService', helper.ensureAuthenticated, helper.isAdmin, [
+    check('title').notEmpty()
+    ], (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        req.flash('danger', 'Title can not be empty!');
+        res.render('admin');
+        return;
+    } else {
+        new Services({
+            title: req.body.title,
+            date: req.body.date,
+            description: req.body.description
+        }).save((err, news) => {
+            console.log(req);
             req.flash('success', 'New service added');
             res.redirect('/admin');
-        }
-    });
+        });
+    }
 });
 
 //admin get unpublished documents
