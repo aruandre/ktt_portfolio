@@ -13,7 +13,7 @@ block content
                 a(href='#') Edit
     br
     != messages('message', locals)
-    form(method='POST', action='/admin/unpublished/edit/' + document._id)
+    form(method='POST', action='/admin/unpublished/edit/' + document._id, enctype='multipart/form-data')
         //- enctype='multipart/form-data' adding this will break updating docs
         #form-group
             .input-group.mb-3
@@ -50,6 +50,8 @@ block content
         #form-group.form-check
             label.form-check-label Publish&nbsp;
             input.form-control-input(name='status' type='checkbox' value='true')
+        #form-group
+            p File path: #{document.path}
         #form-group
             input(type='file', name='fileupload')
             br

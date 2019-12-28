@@ -122,11 +122,12 @@ router.post('/unpublished/edit/:id', helper.ensureAuthenticated, helper.isAdmin,
         let document = {};
         document.document_type = req.body.document_type;
         document.title = req.body.title;
-        document.author = req.body.author.split(",");
+        // document.author = req.body.author.split(",");
+        document.author = req.body.author;
         document.documentCreated_at = req.body.documentCreated_at;
         document.description = req.body.description;
         document.tag = req.body.tag;
-        //- document.path = req.file.path;
+        document.path = req.files.path;
         document.status = req.body.status;
         
         let query = {_id:req.params.id}
@@ -141,8 +142,18 @@ router.post('/unpublished/edit/:id', helper.ensureAuthenticated, helper.isAdmin,
 });
 
 //register process
-router.post('/addUser', helper.ensureAuthenticated, helper.isAdmin, (req, res) => {
-    try{
+router.post('/addUser', helper.ensureAuthenticated, helper.isAdmin, [
+    check('username').notEmpty(),
+    check('password').notEmpty(),
+    check('email').notEmpty()
+], (req, res) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        req.flash('danger', 'Username, password and email are required!');
+        res.render('admin');
+        return;
+    } else {
         const firstname = req.body.firstname;
         const lastname = req.body.lastname;
         const role = req.body.role;
@@ -191,10 +202,7 @@ router.post('/addUser', helper.ensureAuthenticated, helper.isAdmin, (req, res) =
                 });
             });
         });
-    } catch(err){
-        console.log(err);
-        res.render('error');
     }
 });
-            
+
 module.exports = router;

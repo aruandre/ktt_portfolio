@@ -5,13 +5,7 @@ router.get('/', (req, res) => {
     res.render('index');
 });
 
-// function newCourseRoute(courseNr){
-//     let courseRoute = require('./ktd17');
-//     router.use('/ktd17', courseRoute);
-// }
-
-// newCourseRoute(17);
-
+//---------- KTD ROUTES ------------
 let ktd17Route = require('./ktd17');
 router.use('/students/ktd17', ktd17Route);
 

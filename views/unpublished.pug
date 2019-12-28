@@ -23,6 +23,7 @@ block content
                 p Document description: #{document.description}
                 p Document tags: #{document.tag}
                 p Document status: #{document.status}
+                p File path: #{document.path}
         if user
             a.btn.btn-primary(href='/admin/unpublished/edit/'+ document._id) Edit
             a.btn.btn-danger.delete-document(href='#', data-id=document._id) Delete
