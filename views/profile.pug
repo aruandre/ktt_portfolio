@@ -11,7 +11,6 @@ block content
     br
     != messages('message', locals)
     p Username: #{user.username}
-    p Password: #{user.password} 
     p Email: #{user.email}
     p Personal portfolio: 
         a(href='https://' + user.personalPortfolio)|#{user.personalPortfolio}
