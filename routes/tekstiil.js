@@ -11,9 +11,9 @@ router.get('/', async (req, res) => {
         } else {
             res.render('tekstiil', {
                 documents: documents
-            }).lean();
+            });
         }
-    });
+    }).lean();
 });
 
 module.exports = router;
