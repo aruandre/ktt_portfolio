@@ -28,10 +28,10 @@ block content
                             option.form-control(value='Muu') Muu
             #form-group
                 label Document title:
-                input.form-control(name='title', type='text', required)
+                input.form-control(name='title', type='text', required, placeholder="Insert title of your document")
             #form-group
                 label Author:
-                input.form-control(name='author', type='text', required)
+                input.form-control(name='author', type='text', required, placeholder="Insert document author(s) name")
             #form-group
                 label Created at:
                 input.form-control(name='documentCreated_at', type='date')
@@ -51,9 +51,8 @@ block content
             #form-group.form-check
                 label.form-check-label(for='defaultCheck3') Publish&nbsp;
                 input#defaultCheck3.form-control-input(name='status' type='checkbox' value='true')
-            //- prepend not showing added file name
             #form-group
-                input(type='file', name='fileupload' multiple accept='image/*')
+                input(type='file', name='fileupload', multiple, accept='image/*')
             br
             input.btn.btn-success(type='submit', value='Submit')
             input.btn.btn-warning(type='reset', value='Reset')
@@ -68,7 +67,7 @@ block content
         form(method='POST', action='/admin/addNews')
             #form-group
                 label News title:
-                input.form-control(name='title', type='text')
+                input.form-control(name='title', type='text', placeholder="Insert news headline")
             #form-group
                 label Date:
                 input.form-control(name='date', type='date')
@@ -92,7 +91,7 @@ block content
         form(method='POST', action='/admin/addService')
             #form-group
                 label Service title:
-                input.form-control(name='title', type='text')
+                input.form-control(name='title', type='text', placeholder="Insert title of new service")
             #form-group
                 label Description:
                 textarea.form-control(name='description')
@@ -118,28 +117,28 @@ block content
                             option.form-control(value='admin') Admin
             #form-group
                 label Firstname:
-                input.form-control(name='firstname', type='text', required)
+                input.form-control(name='firstname', type='text', required, placeholder="Insert new students firstname")
             #form-group
                 label Lastname:
-                input.form-control(name='lastname', type='text', required)
+                input.form-control(name='lastname', type='text', required, placeholder="Insert new students lastname")
             #form-group
                 label Username:
-                input.form-control(name='username', type='text')
+                input.form-control(name='username', type='text', placeholder="Insert new students username")
             #form-group
                 label Email:
-                input.form-control(name='email', type='text', required)
+                input.form-control(name='email', type='text', required, placeholder="Insert new user's email")
             #form-group
                 label Course:
             .input-group
                 .input-group-prepend
                     span.input-group-text(id='') KTD
-                input.form-control(type='number', name='course')
+                input.form-control(type='number', name='course', placeholder="Insert course number")
             #form-group
                 label Personal portfolio link:
             .input-group
                 .input-group-prepend
                     span.input-group-text(id='') https://
-                input.form-control(tpye='text' name='personalPortfolio')
+                input.form-control(tpye='text' name='personalPortfolio', placeholder="Insert students personal portfolio link")
             #form-group
                 label Password:
                 input.form-control#password(name='password', type='password')
