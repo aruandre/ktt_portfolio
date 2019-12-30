@@ -21,7 +21,7 @@ router.post('/', (req, res, next) => {
             });
         }, (token, done) => {
         Students.findOne({ email: req.body.email }, (err, student) => {
-            if (!student) {
+            if (!student || req.body.email == '') {
                 req.flash('error', 'No account with that email address exists.');
                 return res.redirect('/forgot');
             }
