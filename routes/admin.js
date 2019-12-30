@@ -127,7 +127,7 @@ router.post('/unpublished/edit/:id', helper.ensureAuthenticated, helper.isAdmin,
         document.documentCreated_at = req.body.documentCreated_at;
         document.description = req.body.description;
         document.tag = req.body.tag;
-        document.path = req.files.path;
+        // document.path = req.files.path;
         document.status = req.body.status;
         
         let query = {_id:req.params.id}
