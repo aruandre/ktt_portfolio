@@ -20,7 +20,7 @@ block content
         each student, i in students
             p Name: #{student.firstname + ' ' + student.lastname}
             p Personal portfolio:&nbsp;
-                a(href='https://' + student.personalPortfolio)|#{student.personalPortfolio}
+                a(href='https://' + student.personalPortfolio, target="_blank")|#{student.personalPortfolio}
             p Course: #{student.course}
             if user
                 a.btn.btn-primary(href='/students/edit/' + student._id) Edit
