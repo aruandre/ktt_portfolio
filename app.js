@@ -91,6 +91,6 @@ let mainRoute = require('./routes/main');
 app.use(mainRoute);
 
 //---------- START SERVER -------------
-spdy.createServer(options, app).listen(30000, () => {
-    console.log('Server listening on port 30000');
+spdy.createServer(options, app).listen(443, () => {
+    console.log('Server listening on port 443');
 });
