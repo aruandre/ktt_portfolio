@@ -19,6 +19,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+//--------- hardcoded pagination ------------
 async function getPortfolioPages(pageNr, startIndex){
     router.get('/' + pageNr, (req, res) => {
         try {
@@ -37,9 +38,7 @@ async function getPortfolioPages(pageNr, startIndex){
 getPortfolioPages(1,0)
 getPortfolioPages(2,2)
 getPortfolioPages(3,5)
-//perPage = collection.items.length / 3 
-//for c in colLen
-//pageNr++
+//---------- pagination end -------------
 
 //get single document
 router.get('/document/:id', (req, res) => {
