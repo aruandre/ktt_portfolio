@@ -79,9 +79,7 @@ router.post('/document/edit/:id', helper.ensureAuthenticated, helper.isAdmin, as
                 document.tag = req.body.tag;
                 document.path = req.files;
                 document.status = req.body.status;
-                
-                console.log(req.files);
-                
+                                
                 let query = {_id:req.params.id}
                 await Document.updateOne(query, document, (err) => {
                     req.flash('success', 'Document updated');

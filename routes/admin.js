@@ -34,7 +34,6 @@ router.post('/addDocument', helper.ensureAuthenticated, (req, res, next) => {
                     path: req.files.path,
                     status: req.body.status
                 }).save((err, doc) => {
-                    console.log(req);
                     req.flash('success', 'Document added');
                     res.redirect('/admin');
                 });
@@ -42,7 +41,6 @@ router.post('/addDocument', helper.ensureAuthenticated, (req, res, next) => {
         });
     } catch(err){
         console.log(err);
-        console.log(req);
         req.flash('danger', 'Data save failed!');
     }
 });
@@ -64,7 +62,6 @@ router.post('/addNews', helper.ensureAuthenticated, helper.isAdmin, [
             time: req.body.time,
             description: req.body.description
         }).save((err, news) => {
-            console.log(req);
             req.flash('success', 'News added');
             res.redirect('/admin');
         });
@@ -87,7 +84,6 @@ router.post('/addService', helper.ensureAuthenticated, helper.isAdmin, [
             date: req.body.date,
             description: req.body.description
         }).save((err, news) => {
-            console.log(req);
             req.flash('success', 'New service added');
             res.redirect('/admin');
         });
