@@ -3,7 +3,6 @@ const router = express.Router();
 const helper = require('../helper/helper');
 let Students = require('../models/students');
 
-// ---------- STUDENTS ----------
 //students home route
 router.get('/', async (req, res) => {
     await Students.find({ role: 'basic' }, (err, students) => {

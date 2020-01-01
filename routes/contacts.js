@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
 
-//------------ CONTACTS ---------------
+//contacts home route
 router.get('/', (req, res) => {
     res.render('contacts');
 });

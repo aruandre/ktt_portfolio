@@ -14,7 +14,6 @@ block content
     br
     != messages('message', locals)
     form(method='POST', action='/portfolio/document/edit/' + document._id, enctype='multipart/form-data')
-        //- enctype='multipart/form-data' adding this will break updating docs
         #form-group
            .input-group.mb-3
                 .input-group-prepend

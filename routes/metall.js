@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 let Document = require('../models/document');
 
-//---------- METALL ----------------
 //metall home route
 router.get('/', async (req, res) => {
     await Document.find({ status: true, tag: 'Metall' }, (err, documents) => {

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-//------------ ABOUT ---------------
+//about home route
 router.get('/', (req, res) => {
     res.render('about');
 });

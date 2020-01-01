@@ -3,7 +3,7 @@ const router = express.Router();
 const helper = require('../helper/helper');
 let Students = require('../models/students');
 
-//profile route
+//profile home route
 router.get('/', helper.ensureAuthenticated, async (req, res) => {
     await Students.find({}, (err, students) => {
         if(err){

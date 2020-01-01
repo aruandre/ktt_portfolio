@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 let Students = require('../models/students');
 
-//------------ FORGOT -------------
+//forgot home route
 router.get('/', (req, res) => {
     res.render('forgot', {
         student: req.student

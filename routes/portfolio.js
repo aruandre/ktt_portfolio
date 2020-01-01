@@ -3,8 +3,6 @@ const router = express.Router();
 const helper = require('../helper/helper');
 let Document = require('../models/document');
 
-
-//---------- PORTFOLIO ----------------
 //portfolio home route
 router.get('/', async (req, res) => {
     try {

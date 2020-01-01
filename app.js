@@ -37,7 +37,7 @@ app.use(helmet({
     referrerPolicy: true
 }));
 
-//logger
+//set logdir and logformat
 let logDir = path.join(__dirname, 'log');
 fs.existsSync(logDir) || fs.mkdirSync(logDir);
 let accessLogStream = fs.createWriteStream(logDir + '/accesslog' + '-' + new Date().toJSON().slice(0,10) + '-' + Date.now() + '.log',{ path: logDir });

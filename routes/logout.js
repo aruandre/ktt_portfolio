@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-//logout
+//logout route
 router.get('/', (req, res) => {
     req.logout();
     req.flash('success', 'You are logged out');

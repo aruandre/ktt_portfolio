@@ -12,7 +12,6 @@ block content
     != messages('message', locals)
     .row#services-row
         each service, i in services
-            //-.card.card-body
             .col-sm-4
                 h4.title=service.title
                 p.description=service.description

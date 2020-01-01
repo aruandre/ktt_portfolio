@@ -3,8 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const rateLimiter = require('../helper/rateLimiter');
 
-//------------ LOGIN --------------
-//login route
+//login home route
 router.get('/', (req, res) => {
     res.render('login');
 });

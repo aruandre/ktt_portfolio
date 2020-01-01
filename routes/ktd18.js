@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 let Students = require('../models/students');
 
-// ---------- STUDENTS ----------
-//students home route
+//ktd18 home route
 router.get('/', async (req, res) => {
     await Students.find({ role: 'basic', course: '18' }, (err, students) => {
         if(err){

@@ -3,8 +3,7 @@ const router = express.Router();
 const helper = require('../helper/helper');
 let Services = require('../models/services');
 
-//------------ SERVICES ------------
-//get services route
+//services home route
 router.get('/', async (req, res) => {
     await Services.find({}, (err, services) => {
         if(err){

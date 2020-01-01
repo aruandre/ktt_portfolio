@@ -8,7 +8,7 @@ let Services = require('../models/services');
 let Students = require('../models/students');
 const { check, validationResult } = require('express-validator');
 
-//----------- ADMIN ---------------
+//admin home route
 router.get('/', helper.ensureAuthenticated, (req, res) => {
     res.render('admin', {
     });
@@ -176,15 +176,6 @@ router.post('/addUser', helper.ensureAuthenticated, helper.isAdmin, [
             confirm: confirm
         });
         
-        //TODO check if user exists
-        
-        // if(password == '' || confirm == ''){
-            //     req.flash('danger', 'Password can not be empty');
-            // }
-            // if(password !== confirm){
-                //     req.flash('danger', 'Passwords do not match');
-                // }
-                
         bcrypt.genSalt(10, (err, salt) => {
             bcrypt.hash(newStudent.password, salt, (err, hash) => {
                 if(err){
