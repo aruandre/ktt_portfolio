@@ -43,6 +43,11 @@ fs.existsSync(logDir) || fs.mkdirSync(logDir);
 let accessLogStream = fs.createWriteStream(logDir + '/accesslog' + '-' + new Date().toJSON().slice(0,10) + '-' + Date.now() + '.log',{ path: logDir });
 //setup the logger 
 app.use(morgan('combined', {stream : accessLogStream }));
+// fix false http/1.1 logging
+morgan.token('http-version', function getHttpVersionToken(req)
+{
+    return req.isSpdy ? '2' : req.httpVersionMajor + '.' + req.httpVersionMinor
+});
 
 //load view engine
 app.set('views', path.join(__dirname, 'views'));
