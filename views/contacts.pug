@@ -1,0 +1,42 @@
+extends layout
+
+block content
+    nav(aria-label='breadcrumb')
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/contacts') Contacts
+    h1 Contacts page
+    br
+    != messages('message', locals)
+    .row
+        .col-5
+            br
+            br
+            h4 Send us a message
+            form(method='POST', action='/contacts/sendMessage')
+                #form-group
+                    label Your name:
+                    input.form-control(name='name', type='text')
+                #form-group
+                    label Your email:
+                    input.form-control(name='email', type='email')
+                #form-group
+                    label Message:
+                    textarea.form-control(name='message')
+                    br
+                input.btn.btn-success(type='submit', value='Submit')
+        .col-3
+            br
+            br
+            p Tallinn University Haapsalu College
+            p Lihula mnt 12
+            p 90507 Haapsalu
+            p Estonia
+            p Phone: (+372) 472 0240
+            p E-mail: kolledz@hk.tlu.ee
+        .col-4
+            br
+            br
+            iframe(src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2058.7606400192444!2d23.539483016457616!3d58.93543898152277!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46f2a776ef37589d%3A0x8adb6075f9469fe1!2sTallinn%20University%20Haapsalu%20College!5e0!3m2!1sen!2see!4v1574638239811!5m2!1sen!2see' width='350' height='250' frameborder='0' style='border:0;' allowfullscreen='')

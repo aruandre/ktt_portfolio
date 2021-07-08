@@ -1,66 +1,57 @@
 const express = require('express');
 const path = require('path');
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-//const { check, validationResult } = require('express-validator');
-//const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
-const config = require('./config/database');
-const bcrypt = require('bcryptjs');
-const multer = require('multer');
+const fs = require('fs');
+const morgan = require('morgan');
+const helperDb = require('./helper/db');
+const spdy = require('spdy');
+const helmet = require('helmet')
 
+require('dotenv').config();
+
+//SSL & http/2
+let key = fs.readFileSync(__dirname + '/certs/cert.key');
+let cert = fs.readFileSync(__dirname + '/certs/cert.crt');
+let options = {
+    key: key,
+    cert: cert,
+    spdy: {
+        protocols: [ 'h2', 'spdy/3.1', 'http/1.1' ],
+        plain: false
+    }
+};
 
 //db connection
-mongoose.connect(config.database, { useNewUrlParser: true, useUnifiedTopology: true });
-let db = mongoose.connection;
-
-//check connection
-db.once('open', () => {
-    console.log('Connected to MongoDB');
-});
-
-//check for db errors
-db.on('error', (err) => {
-    console.log(err);
-});
+helperDb.dbConn();
 
 //init app
 const app = express();
 
-//public folder
-app.use(express.static('./public'));
+//setup helmet
+app.use(helmet({
+    //contentSecurityPolicy: true,
+    crossdomain: true,
+    //featurepolicy
+    referrerPolicy: true
+}));
 
-//set storage engine
-const storage = multer.diskStorage({
-    destination: './public/uploads/',
-    filename: (req, file, cb) => {
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-    }
+//set logdir and logformat
+let logDir = path.join(__dirname, 'log');
+fs.existsSync(logDir) || fs.mkdirSync(logDir);
+let accessLogStream = fs.createWriteStream(logDir + '/accesslog' + '-' + new Date().toJSON().slice(0,10) + '-' + Date.now() + '.log',{ path: logDir });
+//setup the logger 
+app.use(morgan('combined', {stream : accessLogStream }));
+// fix false http/1.1 logging
+morgan.token('http-version', function getHttpVersionToken(req)
+{
+    return req.isSpdy ? '2' : req.httpVersionMajor + '.' + req.httpVersionMinor
 });
-
-//init upload
-const upload = multer({
-    storage: storage,
-    limits: {fileSize: 10000000}, //10MB
-    fileFilter: (req, file, cb) => {
-        let ext = path.extname(file.originalname);
-        if(ext !== '.png' || ext !== '.jpg' || ext !== '.jpeg' || ext !== '.pdf'){
-            req.flash('danger', 'File type not allowed!');
-        }
-        cb(null, true)
-    }
-}).single('fileupload');
-
-//bring in models
-let Document = require('./models/document');
-let User = require('./models/user');
 
 //load view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-// app.set('views', path.join(__dirname, 'views/ejs'));
-// app.set('view engine', 'ejs');
 
 //body-parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -74,7 +65,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: 'keyboard cat',
     resave: true,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true, // minimize risk of XSS attacks by restricting the client from reading the cookie
+        secure: true, // only send cookie over https
+        maxAge: 60000 * 60 * 24 // set cookie expiry length in ms
+    }
 }));
 
 //express messages middleware
@@ -95,235 +91,11 @@ app.get('*', (req, res, next) => {
     next();
 });
 
-//ACL
-function ensureAuthenticated(req, res, next){
-    if(req.isAuthenticated()){
-        return next();
-    } else {
-        req.flash('danger', 'Action not allowed!');
-        res.redirect('/');
-    }
-}
+//------------ MAIN ROUTE ---------------
+let mainRoute = require('./routes/main');
+app.use(mainRoute);
 
-//---- routes ----//
-//home route
-app.get('/', (req, res) => {
-    Document.find({}, (err, documents) => {
-        if(err){
-            console.log(err);
-        } else {
-            res.render('index', {
-                documents: documents
-            });
-        }
-    });
-});
-
-//get single document
-app.get('/document/:id', (req, res) => {
-    Document.findById(req.params.id, (err, document) => {
-        res.render('single_document', {
-            document: document
-        });
-    });
-});
-
-//admin route
-app.get('/admin', ensureAuthenticated, (req, res) => {
-    res.render('admin', {
-    });
-});
-
-// app.post('/admin/add', ensureAuthenticated,
-// //TODO fix validation
-// // [
-//     // check('document_type').isEmpty().withMessage('Document type is required'),
-//     // check('title').isEmpty().withMessage('Document title is required'),
-//     // check('author').isEmpty().withMessage('Document author is required')
-//     // ], 
-//     (req, res) => { 
-//         //get errors
-//         // let errors = validationResult(req);
-//         // if(!errors.isEmpty()){
-//             //     res.render('admin', {
-//                 //         errors:errors
-//                 //     });
-//                 // } else {
-//                     let document = new Document();
-//                     document.document_type = req.body.document_type;
-//                     document.save((err) => {
-//                         if(err){
-//                             console.log(err);
-//                             return;
-//                         } else {
-//                             req.flash('success', 'Document added');
-//                             res.redirect('/admin');
-//                         }
-//         });
-//         // }
-//     });
-
-app.post('/admin/add', ensureAuthenticated, (req, res) => {
-    upload(req, res, (err) => {
-        if(err){
-            console.log(err);
-            req.flash('danger', 'File upload failed!');
-            return;
-        } else {
-            new Document({
-                document_type: req.body.document_type,
-                title: req.body.title,
-                author: req.body.author,
-                created_at: req.body.created_at,
-                description: req.body.description,
-                tag: req.body.tag,
-                path: req.body.path
-            }).save((err, doc) => {
-                console.log(req);
-                if(err){
-                    req.flash('danger', 'Data save failed!');
-                    return;
-                } else {
-                    req.flash('success', 'Document added');
-                    res.redirect('/admin');
-                }
-            });
-        }
-    });
-});
-
-//load edit form
-app.get('/document/edit/:id', ensureAuthenticated, (req, res) => {
-    Document.findById(req.params.id, (err, document) => {
-        res.render('edit_document', {
-            document: document
-        });
-    });
-});
-
-//update submit POST route
-app.post('/admin/edit/:id', ensureAuthenticated, (req, res) => {
-    let document = {};
-    document.document_type = req.body.document_type;
-    document.title = req.body.title;
-    document.author = req.body.author;
-    document.created_at = req.body.created_at;
-    document.description = req.body.description;
-    document.tag = req.body.tag;
-    
-    let query = {_id:req.params.id}
-    
-    Document.updateOne(query, document, (err) => {
-        if(err){
-            console.log(err);
-            return;
-        } else {
-            req.flash('success', 'Document updated');
-            res.redirect('/admin');
-        }
-    });
-});
-
-//delete route
-app.delete('/document/:id', ensureAuthenticated, (req, res) => {
-    if(!req.user._id){
-        res.status(500).save();
-    }
-    
-    let query = {_id:req.params.id}
-
-    Document.deleteOne(query, (err) => {
-        if(err){
-            console.log(err);
-        }
-        res.send('Success');
-    });
-});
-
-//register form
-app.get('/register', (req, res) => {
-    res.render('register');
-});
-
-//register process
-app.post('/register', (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
-
-    let newUser = new User({
-        username: username,
-        password: password
-    });
-        
-    bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-            if(err){
-                console.log(err);
-            }
-            newUser.password = hash;
-            newUser.save((err) => {
-                if(err){
-                    console.log(err);
-                    return;
-                } else {
-                    res.redirect('/login');
-                }
-            });
-        });
-    });
-});
-
-//login route
-app.get('/login', (req, res) => {
-    res.render('login');
-});
-
-//login process
-app.post('/login', (req, res, next) => {
-    passport.authenticate('local', {
-        successRedirect:'/',
-        failureRedirect:'/login',
-        failureFlash: true
-    })(req, res, next);
-});
-
-//logout
-app.get('/logout', (req, res) => {
-    req.logout();
-    req.flash('success', 'You are logged out');
-    res.redirect('/');
-});
-
-
-//get lõputööd route
-app.get('/loputood', (req, res) => {
-    Document.find({ document_type: 'Lõputöö' }, (err, documents) => {
-        if(err){
-            console.log(err);
-        } else {
-            res.render('loputood', {
-                documents: documents
-            });
-        }
-    });
-});
-
-//TODO search get route
-
-//get author route
-app.get('/:author', (req, res) => {
-    Document.find({ document_author: req.body.author }, (err, documents) => {
-        if(err){
-            console.log(err);
-        } else {
-            res.render('single_author', {
-                documents: documents
-            });
-        }
-    });
-});
-
-//start server
-app.listen(30000, () => {
-    console.log('Server listening on port 30000');
+//---------- START SERVER -------------
+spdy.createServer(options, app).listen(443, () => {
+    console.log('Server listening on port 443');
 });

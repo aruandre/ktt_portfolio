@@ -1,0 +1,33 @@
+extends layout
+
+block content
+    nav(aria-label='breadcrumb')
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/Students') Students
+            li.breadcrumb-item
+                a(href='/Edit') Edit
+    h1 Student info edit page
+    br
+    != messages('message', locals)
+    p Username: #{student.username}
+    p Email: #{student.email}
+    p Role: #{student.role}
+    hr
+    form(method='POST', action='/students/edit/' + student._id)
+        #form-group
+            label Email:
+            input.form-control(name='email', type='text', value=student.email)
+        #form-group
+            label Personal portfolio:
+        .input-group
+            .input-group-prepend
+                span.input-group-text(id='') https://
+            input.form-control(name='personalPortfolio', type='text', value=student.personalPortfolio, placeholder="www.something.com")
+        br
+        #form-group
+            input.btn.btn-success(type='submit', value='Submit')
+            input.btn.btn-warning(type='reset', value='Reset')
+            a.button.btn.btn-danger(href='/students/', value='Cancel') Cancel

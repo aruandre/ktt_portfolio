@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    nav(aria-label='breadcrumb')
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/profile') Profile
+    h1 Profile page
+    br
+    != messages('message', locals)
+    p Username: #{user.username}
+    p Email: #{user.email}
+    p Personal portfolio: 
+        a(href='https://' + user.personalPortfolio)|#{user.personalPortfolio}
+    p Role: #{user.role}
+    br
+    if user
+        a.btn.btn-primary(href='/profile/edit/' + user._id) Edit my profile
+        a.btn.btn-success(href='/forgot') Reset my password
+        br

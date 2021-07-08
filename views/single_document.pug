@@ -1,20 +1,25 @@
 extends layout
 
 block content
+    nav(aria-label='breadcrumb')
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/portfolio') Portfolio
+            li.breadcrumb-item
+                a(href='#') Single document
     h1 single document page
     br
-    p Id: #{document._id}
     p Document type: #{document.document_type}
     p Document title: #{document.title}
     p Document author: #{document.author} 
-    p Document created at: #{document.created_at}
+    p Document created at: #{document.documentCreated_at}
     p Document description: #{document.description}
     p Document tags: #{document.tag}
-    strong
-        p TODO: upload/download pics/docs
-    hr
-    //- visible if logged in
     if user
-        a.btn.btn-primary(href='/document/edit/'+ document._id) Edit
+        a.btn.btn-primary(href='/portfolio/document/edit/'+ document._id) Edit
         a.btn.btn-danger.delete-document(href='#', data-id=document._id) Delete
-    a(href='/' + document.author) More from this author...
+    hr
+    img(src='../..' + document.path height='100%' width='100%')
+    strong    

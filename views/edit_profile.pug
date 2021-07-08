@@ -1,0 +1,34 @@
+extends layout
+
+block content
+    nav(aria-label='breadcrumb')
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/profile') Profile
+            li.breadcrumb-item
+                a(href='/profile/edit') Edit
+    h1 Profile page
+    br
+    != messages('message', locals)
+    p Username: #{user.username}
+    p Password: #{user.password} 
+    p Email: #{user.email}
+    p Role: #{user.role}
+    hr
+    form(method='POST', action='/profile/edit/' + user._id)
+        #form-group
+            label Email:
+            input.form-control(name='email', type='text', value=user.email)
+        #form-group
+            label Personal portfolio:
+        .input-group
+            .input-group-prepend
+                span.input-group-text(id='') https://
+            input.form-control(name='personalPortfolio', type='text', value=user.personalPortfolio)
+        br
+        #form-group
+            input.btn.btn-success(type='submit', value='Submit')
+            input.btn.btn-warning(type='reset', value='Reset')
+            a.button.btn.btn-danger(href='/profile/', value='Cancel') Cancel

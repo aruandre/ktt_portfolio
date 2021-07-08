@@ -1,0 +1,31 @@
+extends layout
+
+block content
+    nav(aria-label='breadcrumb')
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/students') Students
+            li.breadcrumb-item
+                a(href='/students/ktd19') KTD19
+    h1 KTD19 students
+    br
+    != messages('message', locals)
+    .text-center
+        .btn-group(role='group')
+            a.btn.btn-sm.btn-outline-secondary(href='/students/ktd_earlier') Earlier
+            a.btn.btn-sm.btn-outline-secondary(href='/students/ktd17') KTD17
+            a.btn.btn-sm.btn-outline-secondary(href='/students/ktd18') KTD18
+            a.btn.btn-sm.btn-outline-secondary(href='/students/ktd19') KTD19
+    #students
+        each student, i in students
+            p Name: #{student.firstname + ' ' + student.lastname}
+            p Personal portfolio:&nbsp;
+                a(href='https://' + student.personalPortfolio, target="_blank")|#{student.personalPortfolio}
+            p Course: #{student.course}
+            if user
+                a.btn.btn-primary(href='/students/edit/' + student._id) Edit
+                a.btn.btn-danger.delete-students(href='#', data-id=student._id) Delete
+            hr
+            

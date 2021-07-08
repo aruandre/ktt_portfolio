@@ -1,0 +1,24 @@
+extends layout
+
+block content
+    nav(aria-label='breadcrumb')
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/services') Services
+    h1 Services page
+    br
+    != messages('message', locals)
+    .row#services-row
+        each service, i in services
+            .col-sm-4
+                h4.title=service.title
+                p.description=service.description
+                if user
+                    a.btn.btn-primary(href='/services/edit/'+ service._id) Edit
+                    a.btn.btn-danger.delete-services(href='#', data-id=service._id) Delete
+                br
+    br
+    h4 Want to know more?  
+        a(href='/contacts') Get in contact with us

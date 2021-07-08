@@ -1,0 +1,25 @@
+extends layout
+
+block content
+    nav(aria-label='breadcrumb')
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/services') Services
+            li.breadcrumb-item
+                a(href='/services/edit' + service._id) Edit
+    br
+    != messages('message', locals)
+    form(method='POST', action='/services/edit/' + service._id)
+        #form-group
+            label Service title:
+            input.form-control(name='title', type='text', value=service.title, required)
+        #form-group
+            label Description:
+            input.textarea.form-control(name='description', type='text', value=service.description)
+            br
+        #form-group
+            input.btn.btn-success(type='submit', value='Submit')   
+            input.btn.btn-warning(type='reset', value='Reset')
+            a.button.btn.btn-danger(href='/services/', value='Cancel') Cancel

@@ -1,0 +1,30 @@
+extends layout
+
+block content
+    nav(aria-label='breadcrumb')
+        ol.breadcrumb
+            li.breadcrumb-item
+                a(href='/') Home
+            li.breadcrumb-item
+                a(href='/admin') Admin
+            li.breadcrumb-item
+                a(href='/admin/unpublished') Unpublished
+    h1 Unpublished docs
+    br
+    != messages('message', locals)
+    .row
+    each document, i in documents
+        .card.card-body
+            .col-md-4
+                p Document type: #{document.document_type}
+                p Document title: #{document.title}
+                p Document author: #{document.author}
+                p Document created at: #{document.documentCreated_at}
+                p Document description: #{document.description}
+                p Document tags: #{document.tag}
+                p Document status: #{document.status}
+                p File path: #{document.path}
+        if user
+            a.btn.btn-primary(href='/admin/unpublished/edit/'+ document._id) Edit
+            a.btn.btn-danger.delete-document(href='#', data-id=document._id) Delete
+        br

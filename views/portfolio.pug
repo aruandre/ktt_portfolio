@@ -7,9 +7,7 @@ block content
                 a(href='/') Home
             li.breadcrumb-item
                 a(href='/portfolio') Portfolio
-            li.breadcrumb-item
-                a(href='/portfolio/loputood') Lõputööd
-    h1 Lõputööd page
+    h1 Portfolio page
     br
     .text-center
         .btn-group(role='group')
@@ -34,4 +32,17 @@ block content
                             p.list-group-item-text.author=document.author
                             .card
                                 a.btn.btn-sm.btn-outline-secondary(href='/portfolio/document/' + document._id) View
-
+    br
+    br
+    nav(aria-label='Page navigation example')
+        ul.pagination.justify-content-center
+            li.page-item.disabled
+                a.page-link(href='#' tabindex='-1') Previous
+            li.page-item
+                a.page-link(href='/portfolio/1') 1
+            li.page-item
+                a.page-link(href='/portfolio/2') 2
+            li.page-item
+                a.page-link(href='/portfolio/3') 3
+            li.page-item
+                a.page-link#test(href='#') Next
